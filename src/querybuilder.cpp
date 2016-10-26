@@ -61,19 +61,19 @@ cppsql::QueryBuilder& cppsql::QueryBuilder::from(const std::string table_name, c
     return *this;
 }
 
-void cppsql::QueryBuilder::LeftJoin(From left_table, From right_table, const Comparison comparison)
+void cppsql::QueryBuilder::leftJoin(From left_table, From right_table, const Comparison comparison)
 {
     Join join(left_table, right_table, JoinType::LEFT, comparison);
     this->joins_.push_back(join);
 }
 
-void cppsql::QueryBuilder::RightJoin(From left_table, From right_table, const Comparison comparison)
+void cppsql::QueryBuilder::rightJoin(From left_table, From right_table, const Comparison comparison)
 {
     Join join(left_table, right_table, JoinType::RIGHT, comparison);
     this->joins_.push_back(join);
 }
 
-void cppsql::QueryBuilder::InnerJoin(From left_table, From right_table, const Comparison comparison)
+void cppsql::QueryBuilder::innerJoin(From left_table, From right_table, const Comparison comparison)
 {
     Join join(left_table, right_table, JoinType::INNER, comparison);
     this->joins_.push_back(join);

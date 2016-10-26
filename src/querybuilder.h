@@ -38,13 +38,13 @@ public:
     QueryBuilder& from(const std::string table_name);
     QueryBuilder& from(const std::string table_name, const std::string alias);
 
-    void LeftJoin(From left_table,
+    void leftJoin(From left_table,
             From right_table,
             const Comparison comparison);
-    void RightJoin(From left_table,
+    void rightJoin(From left_table,
             From right_table,
             const Comparison comparison);
-    void InnerJoin(From left_table,
+    void innerJoin(From left_table,
             From right_table,
             const Comparison comparison);
 
