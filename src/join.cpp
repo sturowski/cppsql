@@ -23,7 +23,7 @@ cppsql::Join::Join(From left_table,
 
 const std::string cppsql::Join::GetJoinStatement() const
 {
-    std::string statement;
+    std::string statement = "(";
     statement += left_table_.get_table_name()+" "+left_table_.get_alias()
             +" "; // Adding the first element of the join
     statement += to_s(type_)+" ";
@@ -31,6 +31,7 @@ const std::string cppsql::Join::GetJoinStatement() const
             +" "; // Adding the second element of the join
     statement += "on "+left_table_.get_join_column()+" "
             +to_s(comparison_)+" "+right_table_.get_join_column();
+    statement += ")";
 
     return statement;
 }

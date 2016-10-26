@@ -61,19 +61,19 @@ cppsql::QueryBuilder& cppsql::QueryBuilder::from(const std::string table_name, c
     return *this;
 }
 
-void cppsql::QueryBuilder::LeftJoin(From left_table, From right_table, const Comparison comparison)
+void cppsql::QueryBuilder::leftJoin(From left_table, From right_table, const Comparison comparison)
 {
     Join join(left_table, right_table, LEFT, comparison);
     this->joins_.push_back(join);
 }
 
-void cppsql::QueryBuilder::RightJoin(From left_table, From right_table, const Comparison comparison)
+void cppsql::QueryBuilder::rightJoin(From left_table, From right_table, const Comparison comparison)
 {
     Join join(left_table, right_table, RIGHT, comparison);
     this->joins_.push_back(join);
 }
 
-void cppsql::QueryBuilder::InnerJoin(From left_table, From right_table, const Comparison comparison)
+void cppsql::QueryBuilder::innerJoin(From left_table, From right_table, const Comparison comparison)
 {
     Join join(left_table, right_table, INNER, comparison);
     this->joins_.push_back(join);
@@ -133,7 +133,7 @@ const std::string cppsql::QueryBuilder::create_from_string() const
 
     std::vector<Join>::const_iterator it2 = this->joins_.begin();
     for (; it2!=this->joins_.end(); it2++) {
-        if (it2!=this->joins_.begin())
+        if (it2!=this->joins_.begin() || !this->fromClauses_.empty())
             statement += ", ";
         statement += (*it2).GetJoinStatement();
     }
