@@ -17,6 +17,7 @@ set(SOURCE_FILES
         src/join.cpp
         src/join.h
         src/defines.h
+        src/defines.cpp
         src/where.cpp
         src/where.h)
 

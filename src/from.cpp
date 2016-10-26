@@ -10,46 +10,61 @@
 */
 #include "from.h"
 
-using namespace cppsql;
-
-From::From(const std::string table_name) :
-    table_name_(table_name) {
+cppsql::From::From(const std::string table_name)
+        :
+        table_name_(table_name)
+{
 }
 
-From::From(const std::string table_name, const std::string alias) :
-    table_name_(table_name),
-    alias_(alias) {
+cppsql::From::From(const std::string table_name, const std::string alias)
+        :
+        table_name_(table_name),
+        alias_(alias)
+{
 }
 
-const std::string From::to_string() {
-  return create_string();
+cppsql::From::From(const std::string table_name, const std::string alias, const std::string join_column)
+        :
+        table_name_(table_name),
+        alias_(alias),
+        join_column_(join_column)
+{
 }
 
-const std::string From::to_string() const {
-  return create_string();
+const std::string cppsql::From::to_string()
+{
+    return create_string();
 }
 
-const std::string From::create_string() const {
-  std::string statement = this->table_name_;
-  if (!this->alias_.empty())
-    statement += " " + this->alias_;
-  return statement;
+const std::string cppsql::From::to_string() const
+{
+    return create_string();
 }
-From::From(const std::string table_name, const std::string alias, const std::string join_column) {
-  this->table_name_ = table_name;
-  this->alias_ = alias;
-  this->join_column_ = join_column;
+
+const std::string cppsql::From::create_string() const
+{
+    std::string statement = this->table_name_;
+    if (!this->alias_.empty())
+        statement += " "+this->alias_;
+    return statement;
 }
-const std::string From::get_table_name() const {
-  return this->table_name_;
+
+const std::string cppsql::From::get_table_name() const
+{
+    return this->table_name_;
 }
-const std::string From::get_alias() const {
-  return this->alias_;
+
+const std::string cppsql::From::get_alias() const
+{
+    return this->alias_;
 }
-const std::string From::get_join_column() const {
-  std::string statement;
-  if (!this->alias_.empty())
-    statement = this->alias_ + ".";
-  return statement + this->join_column_;
+
+const std::string cppsql::From::get_join_column() const
+{
+    std::string statement;
+    if (!this->alias_.empty())
+        statement = this->alias_+".";
+
+    return statement+this->join_column_;
 }
 

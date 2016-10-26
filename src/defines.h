@@ -11,6 +11,8 @@
 #ifndef CPPSQL_DEFINES_H
 #define CPPSQL_DEFINES_H
 
+#include <string>
+
 namespace cppsql {
 
 enum Comparison {
@@ -19,56 +21,23 @@ enum Comparison {
   GREATER_THAN,
   LOWER_THAN,
   GREATER_EQUALS_THAN,
-  LOWER_EQUALS_THAN,
-  SIZE_OF_COMPARISON
+  LOWER_EQUALS_THAN
 };
+::std::string to_s(Comparison);
 
 enum JoinType {
   LEFT = 0,
   RIGHT,
-  INNER,
-  SIZE_OF_JOIN_TYPE
+  INNER
 };
+::std::string to_s(JoinType);
 
 enum Operator {
   AND = 0,
-  OR,
-  SIZE_OF_OPERATORS
+  OR
 };
-
-static const char *ComparisonNames[] = {
-    "=",
-    "<>",
-    ">",
-    "<",
-    ">=",
-    "<="
+::std::string to_s(Operator);
 
 };
-
-static const char *JoinTypeNames[] = {
-    "LEFT JOIN",
-    "RIGHT JOIN",
-    "INNER JOIN"
-};
-
-static const char *OperatorsNames[] = {
-    "AND",
-    "OR"
-};
-
-// Checks
-// statically check that the size of ComparisonNames fits the number of Comparison
-static_assert(sizeof(ComparisonNames) / sizeof(char *) == Comparison::SIZE_OF_COMPARISON,
-              "Comparison sizes dont match");
-
-// statically check that the size of JoinTypeNames fits the number of JoinType
-static_assert(sizeof(JoinTypeNames) / sizeof(char *) == JoinType::SIZE_OF_JOIN_TYPE,
-              "JoinType sizes dont match");
-
-// statically check that the size of OperatorsNames fits the number of Operator
-static_assert(sizeof(OperatorsNames) / sizeof(char *) == Operator::SIZE_OF_OPERATORS,
-              "Operator sizes dont match");
-}
 
 #endif //CPPSQL_DEFINES_H

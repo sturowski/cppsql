@@ -17,15 +17,15 @@
 namespace cppsql {
 
 class Where {
- public:
-  Where(const std::string clause, const Operator op);
+public:
+    Where(const std::string clause, const Operator op);
 
-  const std::string get_clause() const;
-  const std::string get_operator() const;
+    const std::string get_clause() const;
+    const std::string get_operator() const;
 
- private:
-  std::string clause_;
-  Operator operator_;
+private:
+    std::string clause_;
+    Operator operator_;
 };
 
 }

@@ -10,18 +10,21 @@
 */
 
 #include "where.h"
-using namespace cppsql;
 
-Where::Where(const std::string clause, const Operator op) :
-    clause_(clause),
-    operator_(op) {
+cppsql::Where::Where(const std::string clause, const Operator op)
+        :
+        clause_(clause),
+        operator_(op)
+{
 }
 
-const std::string Where::get_clause() const {
-  return this->clause_;
+const std::string cppsql::Where::get_clause() const
+{
+    return this->clause_;
 }
 
-const std::string Where::get_operator() const {
-  return OperatorsNames[this->operator_];
+const std::string cppsql::Where::get_operator() const
+{
+    return to_s(this->operator_);
 }
 

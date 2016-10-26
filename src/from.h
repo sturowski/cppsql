@@ -15,27 +15,27 @@
 namespace cppsql {
 
 class From {
- public:
-  From(const std::string table_name); //for a small query without a specific table declaration
-  From(const std::string table_name,
-          const std::string alias); //for complex queries with specific table declaration
-  From(const std::string table_name,
-          const std::string alias,
-          const std::string join_column); //for complex queries with joins
+public:
+    From(const std::string table_name); //for a small query without a specific table declaration
+    From(const std::string table_name,
+            const std::string alias); //for complex queries with specific table declaration
+    From(const std::string table_name,
+            const std::string alias,
+            const std::string join_column); //for complex queries with joins
 
-  const std::string to_string();
-  const std::string to_string() const;
+    const std::string to_string();
+    const std::string to_string() const;
 
-  const std::string get_table_name() const;
-  const std::string get_alias() const;
-  const std::string get_join_column() const;
+    const std::string get_table_name() const;
+    const std::string get_alias() const;
+    const std::string get_join_column() const;
 
- private:
-  const std::string create_string() const;
+private:
+    const std::string create_string() const;
 
-  std::string table_name_;
-  std::string alias_;
-  std::string join_column_;
+    std::string table_name_;
+    std::string alias_;
+    std::string join_column_;
 
 };
 
