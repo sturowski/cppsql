@@ -21,14 +21,16 @@ enum Errors {
   SIZE_OF_ERRORS
 };
 
-static const char* ErrorNames[] = {
-        "All ok.",
-        "Query contains no select statement.",
-        "Query contains no from statement."
+static const char *ErrorNames[] = {
+    "All ok.",
+    "Query contains no select statement.",
+    "Query contains no from statement."
 };
 
+#if __cplusplus > 199711L
 // statically check that the size of ErrorNames fits the number of Errors
-static_assert(sizeof(cppsql::ErrorNames)/sizeof(char*)==cppsql::Errors::SIZE_OF_ERRORS,
-        "sql sizes dont match"); //Check for Errors and ErrorNames
+static_assert(sizeof(cppsql::ErrorNames) / sizeof(char *) == cppsql::Errors::SIZE_OF_ERRORS,
+              "sql sizes dont match"); //Check for Errors and ErrorNames
+#endif
 }
 #endif //CPPSQL_ERRORS_H

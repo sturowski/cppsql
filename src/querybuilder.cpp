@@ -63,19 +63,19 @@ cppsql::QueryBuilder& cppsql::QueryBuilder::from(const std::string table_name, c
 
 void cppsql::QueryBuilder::LeftJoin(From left_table, From right_table, const Comparison comparison)
 {
-    Join join(left_table, right_table, JoinType::LEFT, comparison);
+    Join join(left_table, right_table, LEFT, comparison);
     this->joins_.push_back(join);
 }
 
 void cppsql::QueryBuilder::RightJoin(From left_table, From right_table, const Comparison comparison)
 {
-    Join join(left_table, right_table, JoinType::RIGHT, comparison);
+    Join join(left_table, right_table, RIGHT, comparison);
     this->joins_.push_back(join);
 }
 
 void cppsql::QueryBuilder::InnerJoin(From left_table, From right_table, const Comparison comparison)
 {
-    Join join(left_table, right_table, JoinType::INNER, comparison);
+    Join join(left_table, right_table, INNER, comparison);
     this->joins_.push_back(join);
 }
 
@@ -94,9 +94,9 @@ cppsql::QueryBuilder& cppsql::QueryBuilder::where(const std::string clause, cons
 const std::string cppsql::QueryBuilder::GetSelectStatement()
 {
     if (!this->has_selects())
-        throw ErrorNames[Errors::QUERY_CONTAINS_NO_SELECT];
+        throw ErrorNames[QUERY_CONTAINS_NO_SELECT];
     if (!this->has_fromClauses())
-        throw ErrorNames[Errors::QUERY_CONTAINS_NO_FROM];
+        throw ErrorNames[QUERY_CONTAINS_NO_FROM];
 
     std::string statement;
     statement += this->create_select_string();
@@ -110,13 +110,12 @@ const std::string cppsql::QueryBuilder::GetSelectStatement()
 const std::string cppsql::QueryBuilder::create_select_string() const
 {
     std::string statement = "SELECT ";
-    bool first = true; // we need to know if we have the first item, to set the ',' correct
-    for (const auto& select : this->selects_) {
-        if (!first)
+
+    std::vector<Select>::const_iterator it = this->selects_.begin();
+    for (; it!=this->selects_.end(); it++) {
+        if (it!=this->selects_.begin())
             statement += ", ";
-        else
-            first = false;
-        statement += select.to_string();
+        statement += (*it).to_string();
     }
     return statement;
 }
@@ -124,21 +123,19 @@ const std::string cppsql::QueryBuilder::create_select_string() const
 const std::string cppsql::QueryBuilder::create_from_string() const
 {
     std::string statement = "FROM ";
-    bool first = true; // we need to know if we have the first item, to set the ',' correct
-    for (const auto& from : this->fromClauses_) {
-        if (!first)
+
+    std::vector<From>::const_iterator it = this->fromClauses_.begin();
+    for (; it!=this->fromClauses_.end(); it++) {
+        if (it!=this->fromClauses_.begin())
             statement += ", ";
-        else
-            first = false;
-        statement += from.to_string();
+        statement += (*it).to_string();
     }
 
-    for (const auto& join : this->joins_) {
-        if (!first)
+    std::vector<Join>::const_iterator it2 = this->joins_.begin();
+    for (; it2!=this->joins_.end(); it2++) {
+        if (it2!=this->joins_.begin())
             statement += ", ";
-        else
-            first = false;
-        statement += join.GetJoinStatement();
+        statement += (*it2).GetJoinStatement();
     }
 
     return statement;
@@ -147,13 +144,13 @@ const std::string cppsql::QueryBuilder::create_from_string() const
 const std::string cppsql::QueryBuilder::create_where_string() const
 {
     std::string statement = "WHERE ";
-    bool first = true; // we need to know if we have the first item, to set the ',' correct
-    for (const auto& where : this->whereClauses_) {
-        if (!first)
-            statement += " "+where.get_operator()+" ";
-        else
-            first = false;
-        statement += where.get_clause();
+
+    std::vector<Where>::const_iterator it = this->whereClauses_.begin();
+    for (; it!=this->whereClauses_.end(); it++) {
+        if (it!=this->whereClauses_.begin())
+            statement += " "+(*it).get_operator()+" ";
+
+        statement += (*it).get_clause();
     }
     return statement;
 }

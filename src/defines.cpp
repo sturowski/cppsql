@@ -46,6 +46,7 @@ static const char* OperatorsNames[] = {
     return OperatorsNames[static_cast<int>(op)];
 }
 
+#if __cplusplus>199711L
 // Checks
 // statically check that the size of ComparisonNames fits the number of Comparison
 static_assert(sizeof(ComparisonNames)/sizeof(char*)==static_cast<int>(cppsql::Comparison::LOWER_EQUALS_THAN)+1,
@@ -58,3 +59,5 @@ static_assert(sizeof(JoinTypeNames)/sizeof(char*)==static_cast<int>(cppsql::Join
 // statically check that the size of OperatorsNames fits the number of Operator
 static_assert(sizeof(OperatorsNames)/sizeof(char*)==static_cast<int>(cppsql::Operator::OR)+1,
         "Operator sizes dont match");
+
+#endif
