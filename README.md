@@ -5,7 +5,7 @@ Easy C++ API for SQL.
 https://github.com/sturowski/cppsql
 
 ## License
-The project license is specified in COPYING and COPYING.LESSER.
+The project license is specified in LICENSE and LICENSE.LESSER.
 
 cppsql is free software; you can redistribute it and/or modify it under
 the terms of the GNU Lesser General Public License (LGPL) as published
