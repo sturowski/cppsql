@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
 {
     try {
         QueryBuilder sqb;
+        sqb.set_distinct(true);
         sqb.select("COUNTRY_CODE", "C").select("BANK_CODE", "C").select("CUSTOMER_ID", "C").select("SUBCLIENT", "C")
                 .select("BLOCKED", "C").select("NAME1", "P").select("NAME2", "P").select("TITLE", "P").select("SEX",
                         "P")

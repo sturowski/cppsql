@@ -73,18 +73,22 @@ public:
 
     const std::string GetSelectStatement();
 
-    bool is_empty();
-    bool has_selects();
-    bool has_fromClauses();
-    bool has_joins();
-    bool has_whereClauses();
-    bool has_orderByConditions();
+    const bool is_empty() const;
+    const bool is_distinct() const;
+    const bool has_selects() const;
+    const bool has_fromClauses() const;
+    const bool has_joins() const;
+    const bool has_whereClauses() const;
+    const bool has_orderByConditions() const;
+
+    const bool set_distinct(const bool distinct);
 
     const std::string create_select_string() const;
     const std::string create_from_string() const;
     const std::string create_where_string() const;
 
 private:
+    bool distinct_;
     std::vector<Select> selects_;
     std::vector<From> fromClauses_;
     std::vector<Join> joins_;
