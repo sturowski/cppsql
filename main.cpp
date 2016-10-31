@@ -29,36 +29,55 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <map>
+#include <string>
 #include "src/querybuilder.h"
+#include "src/resourcemanager.h"
 
 using namespace cppsql;
 
+
+
+
+std::map<int, QueryBuilder*> queryCache;
+QueryBuilder* findQueryInCache(const int stmtNr)
+{
+    std::map<int, QueryBuilder*>::iterator it = queryCache.find(stmtNr);
+    if (it==queryCache.end()) {
+        queryCache[stmtNr] = static_cast<QueryBuilder*>(new QueryBuilder());
+        return queryCache[stmtNr];
+    }
+    return it->second;
+}
 int main(int argc, char* argv[])
 {
-    try {
-        QueryBuilder sqb;
-        sqb.set_distinct(true);
-        sqb.select("COUNTRY_CODE", "C").select("BANK_CODE", "C").select("CUSTOMER_ID", "C").select("SUBCLIENT", "C")
-                .select("BLOCKED", "C").select("NAME1", "P").select("NAME2", "P").select("TITLE", "P").select("SEX",
-                        "P")
-                .select("DATE_OF_BIRTH", "P");
-                sqb.select("PHONE", "PH");
-        sqb.from("CUSTOMER", "C");
-        sqb.leftJoin(From("PERSON", "P", "PERSON_ID"), From("PHONE", "PH", "PERSON_ID"), Comparison::EQUALS);
-        sqb.where("C.PERSON_ID = P.PERSON_ID", Operator::AND)
-                .where("C.CUSTOMER_ID like ?", Operator::AND)
-                .where("C.CLIENT = ?", Operator::AND)
-                .where("C.COUNTRY_CODE like ?", Operator::AND)
-                .where("C.BANK_CODE like ?", Operator::AND)
-                .where("C.PERSON_ID like ?", Operator::AND)
-                .where("(P.NAME1 is null or upper(P.NAME1) like ?)", Operator::AND)
-                .where("(P.NAME2 is null or upper(P.NAME2) like ?)", Operator::AND);
+    QueryBuilder* qb1 = findQueryInCache(1);
+    qb1->select("Test");
 
-        std::cout << sqb.GetSelectStatement() << std::endl;
+    QueryBuilder* qb2 = findQueryInCache(1);
+    std::cout << "has selects: " << qb2->has_selects() << std::endl;
 
-    }
-    catch (char const* msg) {
-        std::cerr << msg << std::endl;
-    }
+    ResourceManager<int, QueryBuilder> rm;
+    const int i = 1;
+    QueryBuilder& qb = rm.get_resource(i);
+    qb.select("Hallo");
 
+    std::cout << "rm has_selects: " << qb.has_selects() << std::endl;
+    std::cout << "our resource has_selects: " << rm.get_resource(1).has_selects();
 }
+
+/*
+ * std::map<int, DBStatement*> queryCache;
+ * DBStatement* findQueryInCache(const int stmtNr);
+ * DBStatement*
+SearchUser::findQueryInCache(const int stmtNr) {
+    std::map<int, DBStatement*>::iterator it = queryCache.find(stmtNr);
+    if (it == queryCache.end()) {
+        queryCache[stmtNr] = static_cast<DBStatement*>(con.getStatement(getSelectCustomersStmt(stmtNr)).clone());
+        return queryCache[stmtNr];
+    }
+    return it->second;
+}
+ *
+ *
+ */
