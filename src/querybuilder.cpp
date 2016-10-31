@@ -33,17 +33,19 @@
 #include "querybuilder.h"
 
 cppsql::QueryBuilder::QueryBuilder()
+        :distinct_(false)
 {
 
 }
 
 cppsql::QueryBuilder::QueryBuilder(const QueryBuilder& builder)
 {
-
+    //Not supported
 }
 
 cppsql::QueryBuilder& cppsql::QueryBuilder::operator=(QueryBuilder& builder)
 {
+    //Not supported
     return *this;
 }
 
@@ -130,6 +132,8 @@ const std::string cppsql::QueryBuilder::GetSelectStatement()
 const std::string cppsql::QueryBuilder::create_select_string() const
 {
     std::string statement = "SELECT ";
+    if (is_distinct())
+        statement += "DISTINCT ";
 
     std::vector<Select>::const_iterator it = this->selects_.begin();
     for (; it!=this->selects_.end(); it++) {
@@ -177,7 +181,7 @@ const std::string cppsql::QueryBuilder::create_where_string() const
 
 // Returns an bool that says if this object, has no current members
 // to build a useful sql query.
-bool cppsql::QueryBuilder::is_empty()
+const bool cppsql::QueryBuilder::is_empty() const
 {
     bool empty = true;
     if (!this->has_selects())
@@ -190,30 +194,37 @@ bool cppsql::QueryBuilder::is_empty()
         empty = false;
     return empty;
 }
-
-bool cppsql::QueryBuilder::has_selects()
+const bool cppsql::QueryBuilder::is_distinct() const
+{
+    return this->distinct_;
+}
+const bool cppsql::QueryBuilder::has_selects() const
 {
     return !this->selects_.empty();
 }
 
-bool cppsql::QueryBuilder::has_fromClauses()
+const bool cppsql::QueryBuilder::has_fromClauses() const
 {
     return !this->fromClauses_.empty();
 }
 
-bool cppsql::QueryBuilder::has_joins()
+const bool cppsql::QueryBuilder::has_joins() const
 {
     return !this->joins_.empty();
 }
 
-bool cppsql::QueryBuilder::has_whereClauses()
+const bool cppsql::QueryBuilder::has_whereClauses() const
 {
     return !this->whereClauses_.empty();;
 }
 
-bool cppsql::QueryBuilder::has_orderByConditions()
+const bool cppsql::QueryBuilder::has_orderByConditions() const
 {
     return false;
+}
+const bool cppsql::QueryBuilder::set_distinct(const bool distinct)
+{
+    this->distinct_ = distinct;
 }
 
 
