@@ -39,13 +39,21 @@ cppsql::QueryBuilder::QueryBuilder()
 }
 
 cppsql::QueryBuilder::QueryBuilder(const QueryBuilder& builder)
+        :
+        distinct_(builder.distinct_),
+        selects_(builder.selects_),
+        fromClauses_(builder.fromClauses_),
+        whereClauses_(builder.whereClauses_)
 {
-    //Not supported
+
 }
 
 cppsql::QueryBuilder& cppsql::QueryBuilder::operator=(QueryBuilder& builder)
 {
-    // Not Supported
+    this->distinct_ = builder.distinct_;
+    this->selects_ = builder.selects_;
+    this->fromClauses_ = builder.fromClauses_;
+    this->whereClauses_ = builder.whereClauses_;
     return *this;
 }
 
@@ -124,15 +132,17 @@ const std::string cppsql::QueryBuilder::GetSelectStatement()
     statement += this->create_select_string();
     statement += " ";
     statement += this->create_from_string();
-    statement += " ";
-    statement += this->create_where_string();
+    if(this->has_whereClauses()) {
+        statement += " ";
+        statement += this->create_where_string();
+    }
 
     return statement;
 }
 const std::string cppsql::QueryBuilder::create_select_string() const
 {
     std::string statement = "SELECT ";
-    if(is_distinct())
+    if (is_distinct())
         statement += "DISTINCT ";
 
     bool first = true; // we need to know if we have the first item, to set the ',' correct
