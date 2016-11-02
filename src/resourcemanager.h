@@ -39,19 +39,23 @@ template<typename K, typename R> // K = Key, R = Resource
 class ResourceManager {
 private:
     std::map<K, R> data_;
+    R (* create_resource)(K);
 
 public:
-    R& get_resource(const K key);
+    ResourceManager(R (* create_resource)(K))
+            :create_resource(create_resource) { };
+    R get_resource(const K key);
 };
 
 }
 
-template<typename K, typename R> // K = Key, R = Resource
-R& cppsql::ResourceManager<K, R>::get_resource(const K key)
+template<typename K, typename R>
+// K = Key, R = Resource
+R cppsql::ResourceManager<K, R>::get_resource(const K key)
 {
     typename std::map<K, R>::iterator it = this->data_.find(key);
     if (it==this->data_.end()) {
-        R resource;
+        R resource = create_resource(key);
         this->data_[key] = resource;
         return this->data_[key];
     }
