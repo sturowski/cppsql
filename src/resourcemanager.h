@@ -35,27 +35,27 @@
 #include <map>
 namespace cppsql {
 
-template<typename K, typename R> // K = Key, R = Resource
+template<typename Key, typename Resource, typename Caller>
 class ResourceManager {
 private:
-    std::map<K, R> data_;
-    R (* create_resource)(K);
+    Caller* caller_;
+    std::map<Key, Resource> data_;
+
 
 public:
-    ResourceManager(R (* create_resource)(K))
-            :create_resource(create_resource) { };
-    R get_resource(const K key);
+    ResourceManager(Caller* caller)
+            :caller_(caller) { };
+    Resource get_resource(const Key key);
 };
 
 }
 
-template<typename K, typename R>
-// K = Key, R = Resource
-R cppsql::ResourceManager<K, R>::get_resource(const K key)
+template<typename Key, typename Resource, typename Caller>
+Resource cppsql::ResourceManager<Key, Resource, Caller>::get_resource(const Key key)
 {
-    typename std::map<K, R>::iterator it = this->data_.find(key);
+    typename std::map<Key, Resource>::iterator it = this->data_.find(key);
     if (it==this->data_.end()) {
-        R resource = create_resource(key);
+        Resource resource = caller_->create_resource(key);
         this->data_[key] = resource;
         return this->data_[key];
     }
