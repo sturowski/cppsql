@@ -91,19 +91,3 @@ int main(int argc, char* argv[])
     b.process(1);
     b.process(2);
 }
-
-/*
- * std::map<int, DBStatement*> queryCache;
- * DBStatement* findQueryInCache(const int stmtNr);
- * DBStatement*
-SearchUser::findQueryInCache(const int stmtNr) {
-    std::map<int, DBStatement*>::iterator it = queryCache.find(stmtNr);
-    if (it == queryCache.end()) {
-        queryCache[stmtNr] = static_cast<DBStatement*>(con.getStatement(getSelectCustomersStmt(stmtNr)).clone());
-        return queryCache[stmtNr];
-    }
-    return it->second;
-}
- *
- *
- */
