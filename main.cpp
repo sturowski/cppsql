@@ -36,34 +36,60 @@
 
 using namespace cppsql;
 
-
-
-
-std::map<int, QueryBuilder*> queryCache;
-QueryBuilder* findQueryInCache(const int stmtNr)
+QueryBuilder* getBuilder(int key)
 {
-    std::map<int, QueryBuilder*>::iterator it = queryCache.find(stmtNr);
-    if (it==queryCache.end()) {
-        queryCache[stmtNr] = static_cast<QueryBuilder*>(new QueryBuilder());
-        return queryCache[stmtNr];
+    QueryBuilder* qb = new QueryBuilder();
+    if (key==1) {
+        qb->select("Hallo");
     }
-    return it->second;
+    else if (key==2) {
+        qb->from("Welt");
+    }
+    return qb;
 }
+
+
+class bla {
+private:
+    ResourceManager<int, QueryBuilder*, bla> manager;
+
+public:
+    bla() :
+            manager(this)
+    {
+
+
+    }
+
+    QueryBuilder* create_resource(int key)
+    {
+        if(key == 1)
+        {
+            QueryBuilder* q = new QueryBuilder();
+            q->select("Hallo").from("Welt");
+            return q;
+        }
+        if(key == 2)
+        {
+            QueryBuilder* q = new QueryBuilder();
+            q->select("Welt").from("Hallo");
+            return q;
+        }
+    }
+
+
+    void process(int stmt){
+        std::cout << manager.get_resource(stmt)->GetSelectStatement() << std::endl;
+    }
+
+
+};
+
 int main(int argc, char* argv[])
 {
-    QueryBuilder* qb1 = findQueryInCache(1);
-    qb1->select("Test");
-
-    QueryBuilder* qb2 = findQueryInCache(1);
-    std::cout << "has selects: " << qb2->has_selects() << std::endl;
-
-    ResourceManager<int, QueryBuilder> rm;
-    const int i = 1;
-    QueryBuilder& qb = rm.get_resource(i);
-    qb.select("Hallo");
-
-    std::cout << "rm has_selects: " << qb.has_selects() << std::endl;
-    std::cout << "our resource has_selects: " << rm.get_resource(1).has_selects();
+    bla b;
+    b.process(1);
+    b.process(2);
 }
 
 /*
