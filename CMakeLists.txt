@@ -19,7 +19,9 @@ set(SOURCE_FILES
         src/defines.h
         src/defines.cpp
         src/where.cpp
-        src/where.h)
+        src/where.h
+        src/resourcemanager.h
+        )
 
 
 # The main.cpp is only for testen and developing the classes
