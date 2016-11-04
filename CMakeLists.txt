@@ -17,5 +17,6 @@ set(SOURCE_FILES main.cpp
         src/defines.cpp
         src/where.cpp
         src/where.h
+        src/resourcemanager.h
 )
 add_executable(cppsql ${SOURCE_FILES})
