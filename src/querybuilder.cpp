@@ -240,6 +240,7 @@ const bool cppsql::QueryBuilder::has_orderByConditions() const
 const bool cppsql::QueryBuilder::set_distinct(const bool distinct)
 {
     this->distinct_ = distinct;
+    return this->distinct_;
 }
 
 
