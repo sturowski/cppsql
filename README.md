@@ -1,4 +1,5 @@
-# CPPSQL
+# CppSQL
+[![Build Status](https://travis-ci.org/sturowski/cppsql.svg?branch=master)](https://travis-ci.org/sturowski/cppsql)
 Easy C++ API for SQL.
 
 ## GitLink
