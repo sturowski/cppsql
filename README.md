@@ -1,5 +1,5 @@
 # CppSQL
-[![Build Status](https://travis-ci.org/sturowski/cppsql.svg?branch=master)](https://travis-ci.org/sturowski/cppsql)
+[![Build Status](https://travis-ci.org/sturowski/cppsql.svg?branch=master)](https://travis-ci.org/sturowski/cppsql) [![Build status](https://ci.appveyor.com/api/projects/status/pms62g50hug5kalv/branch/master?svg=true)](https://ci.appveyor.com/project/sturowski/cppsql/branch/master)
 
 Easy C++ API for SQL.
 
