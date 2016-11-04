@@ -1,15 +1,9 @@
-# CMake build script for cppsql
-
-cmake_minimum_required(VERSION 2.8.7)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-set(CMAKE_CXX_STANDARD 11) # C++11...
-set(CMAKE_CXX_STANDARD_REQUIRED ON) #...is required...
-set(CMAKE_CXX_EXTENSIONS OFF) #...without compiler extensions like gnu++11
-
+cmake_minimum_required(VERSION 2.8.6)
 project(cppsql)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES
+set(SOURCE_FILES main.cpp
         src/querybuilder.h
         src/querybuilder.cpp
         src/select.h
@@ -23,9 +17,5 @@ set(SOURCE_FILES
         src/defines.cpp
         src/where.cpp
         src/where.h
-        src/resourcemanager.h
-        )
-
-
-# The main.cpp is only for testen and developing the classes
-add_executable(cppsql main.cpp ${SOURCE_FILES})
+)
+add_executable(cppsql ${SOURCE_FILES})
