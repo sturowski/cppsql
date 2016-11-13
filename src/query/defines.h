@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
-    
-    Created on 20.10.16
+
+    Created on 25.10.16
 
     This file is part of cppsql, a C++ collection.
 
@@ -28,47 +28,36 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <mysqlconnection.h>
-#include <iostream>
-using namespace cppsql;
-int main(int argc, char* argv[])
-{
-    try {
-        MySqlConnection con;
-        con.connect("192.168.178.65", "cn_adm", "", "CLUBNET", 0);
-    }
-    catch (std::exception e) {
-        std::cout << e.what() << std::endl;
-    }
+#ifndef CPPSQL_DEFINES_H
+#define CPPSQL_DEFINES_H
 
-//
-//    if (mysql_query(con, "SELECT * FROM USERS"))
-//    {
-//        finish_with_error(con);
-//    }
-//
-//    MYSQL_RES *result = mysql_store_result(con);
-//
-//    if (result == NULL)
-//    {
-//        finish_with_error(con);
-//    }
-//
-//    int num_fields = mysql_num_fields(result);
-//
-//    MYSQL_ROW row;
-//
-//    while ((row = mysql_fetch_row(result)))
-//    {
-//        for(int i = 0; i < num_fields; i++)
-//        {
-//            printf("%s ", row[i] ? row[i] : "NULL");
-//        }
-//        printf("\n");
-//    }
-//
-//    mysql_free_result(result);
-//    mysql_close(con);
+#include <string>
 
-    exit(0);
-}
+namespace cppsql {
+
+enum Comparison {
+  EQUALS = 0,
+  NOT_EQUALS,
+  GREATER_THAN,
+  LOWER_THAN,
+  GREATER_EQUALS_THAN,
+  LOWER_EQUALS_THAN
+};
+::std::string to_s(Comparison);
+
+enum JoinType {
+  LEFT = 0,
+  RIGHT,
+  INNER
+};
+::std::string to_s(JoinType);
+
+enum Operator {
+  AND = 0,
+  OR
+};
+::std::string to_s(Operator);
+
+};
+
+#endif //CPPSQL_DEFINES_H

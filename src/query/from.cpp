@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
-    
-    Created on 20.10.16
+
+    Created on 25.10.16
 
     This file is part of cppsql, a C++ collection.
 
@@ -28,47 +28,63 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <mysqlconnection.h>
-#include <iostream>
-using namespace cppsql;
-int main(int argc, char* argv[])
+#include "from.h"
+
+cppsql::From::From(const std::string table_name)
+        :
+        table_name_(table_name)
 {
-    try {
-        MySqlConnection con;
-        con.connect("192.168.178.65", "cn_adm", "", "CLUBNET", 0);
-    }
-    catch (std::exception e) {
-        std::cout << e.what() << std::endl;
-    }
-
-//
-//    if (mysql_query(con, "SELECT * FROM USERS"))
-//    {
-//        finish_with_error(con);
-//    }
-//
-//    MYSQL_RES *result = mysql_store_result(con);
-//
-//    if (result == NULL)
-//    {
-//        finish_with_error(con);
-//    }
-//
-//    int num_fields = mysql_num_fields(result);
-//
-//    MYSQL_ROW row;
-//
-//    while ((row = mysql_fetch_row(result)))
-//    {
-//        for(int i = 0; i < num_fields; i++)
-//        {
-//            printf("%s ", row[i] ? row[i] : "NULL");
-//        }
-//        printf("\n");
-//    }
-//
-//    mysql_free_result(result);
-//    mysql_close(con);
-
-    exit(0);
 }
+
+cppsql::From::From(const std::string table_name, const std::string alias)
+        :
+        table_name_(table_name),
+        alias_(alias)
+{
+}
+
+cppsql::From::From(const std::string table_name, const std::string alias, const std::string join_column)
+        :
+        table_name_(table_name),
+        alias_(alias),
+        join_column_(join_column)
+{
+}
+
+const std::string cppsql::From::to_string()
+{
+    return create_string();
+}
+
+const std::string cppsql::From::to_string() const
+{
+    return create_string();
+}
+
+const std::string cppsql::From::create_string() const
+{
+    std::string statement = this->table_name_;
+    if (!this->alias_.empty())
+        statement += " "+this->alias_;
+    return statement;
+}
+
+const std::string cppsql::From::get_table_name() const
+{
+    return this->table_name_;
+}
+
+const std::string cppsql::From::get_alias() const
+{
+    return this->alias_;
+}
+
+const std::string cppsql::From::get_join_column() const
+{
+    std::string statement;
+    if (!this->alias_.empty())
+        statement = this->alias_+".";
+
+    return statement+this->join_column_;
+}
+

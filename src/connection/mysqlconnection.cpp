@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
     
-    Created on 20.10.16
+    Created on 13.11.16
 
-    This file is part of cppsql, a C++ collection.
+    This file is part of tools, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -28,47 +28,46 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <mysqlconnection.h>
-#include <iostream>
-using namespace cppsql;
-int main(int argc, char* argv[])
+
+#include "mysqlconnection.h"
+#include <errors.h>
+/**
+ * The basic contructor, will initialize this MySql connection.
+ * If the mysql_init fails and con will be nullpr it throws an exception.
+ * @throw SqlException SQL_INIT_FAILED
+ * @return
+ */
+cppsql::MySqlConnection::MySqlConnection() throw()
+        :con_(nullptr)
 {
-    try {
-        MySqlConnection con;
-        con.connect("192.168.178.65", "cn_adm", "", "CLUBNET", 0);
+    con_ = mysql_init(nullptr);
+    if (con_==nullptr) {
+        throw SqlException(Errors::SQL_INIT_FAILED);
     }
-    catch (std::exception e) {
-        std::cout << e.what() << std::endl;
+}
+cppsql::MySqlConnection::~MySqlConnection()
+{
+
+}
+void cppsql::MySqlConnection::connect(const std::string host, const std::string user, const std::string password,
+        const std::string database, const int port) throw()
+{
+    // Call the parent function
+    Connection::connect(host, user, password, database, port);
+    if (mysql_real_connect(con_, host_.c_str(), user_.c_str(), password_.c_str(),
+            database_.c_str(), port, NULL, 0)==NULL) {
+        // First close the connection to free the pointer, then throw the exception
+        close();
+        std::string test(mysql_error(con_));
+        throw SqlException(Errors::SQL_CONNECT_FAILED, test);
     }
 
-//
-//    if (mysql_query(con, "SELECT * FROM USERS"))
-//    {
-//        finish_with_error(con);
-//    }
-//
-//    MYSQL_RES *result = mysql_store_result(con);
-//
-//    if (result == NULL)
-//    {
-//        finish_with_error(con);
-//    }
-//
-//    int num_fields = mysql_num_fields(result);
-//
-//    MYSQL_ROW row;
-//
-//    while ((row = mysql_fetch_row(result)))
-//    {
-//        for(int i = 0; i < num_fields; i++)
-//        {
-//            printf("%s ", row[i] ? row[i] : "NULL");
-//        }
-//        printf("\n");
-//    }
-//
-//    mysql_free_result(result);
-//    mysql_close(con);
+}
+void cppsql::MySqlConnection::close()
+{
+    mysql_close(con_);
+}
+void cppsql::MySqlConnection::single_query(const std::string query) throw()
+{
 
-    exit(0);
 }

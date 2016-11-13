@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
-    
-    Created on 20.10.16
+
+    Created on 25.10.16
 
     This file is part of cppsql, a C++ collection.
 
@@ -28,47 +28,37 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <mysqlconnection.h>
-#include <iostream>
-using namespace cppsql;
-int main(int argc, char* argv[])
-{
-    try {
-        MySqlConnection con;
-        con.connect("192.168.178.65", "cn_adm", "", "CLUBNET", 0);
-    }
-    catch (std::exception e) {
-        std::cout << e.what() << std::endl;
-    }
+#ifndef CPPSQL_FROM_H
+#define CPPSQL_FROM_H
+#include <string>
 
-//
-//    if (mysql_query(con, "SELECT * FROM USERS"))
-//    {
-//        finish_with_error(con);
-//    }
-//
-//    MYSQL_RES *result = mysql_store_result(con);
-//
-//    if (result == NULL)
-//    {
-//        finish_with_error(con);
-//    }
-//
-//    int num_fields = mysql_num_fields(result);
-//
-//    MYSQL_ROW row;
-//
-//    while ((row = mysql_fetch_row(result)))
-//    {
-//        for(int i = 0; i < num_fields; i++)
-//        {
-//            printf("%s ", row[i] ? row[i] : "NULL");
-//        }
-//        printf("\n");
-//    }
-//
-//    mysql_free_result(result);
-//    mysql_close(con);
+namespace cppsql {
 
-    exit(0);
+class From {
+public:
+    From(const std::string table_name); //for a small query without a specific table declaration
+    From(const std::string table_name,
+            const std::string alias); //for complex queries with specific table declaration
+    From(const std::string table_name,
+            const std::string alias,
+            const std::string join_column); //for complex queries with joins
+
+    const std::string to_string();
+    const std::string to_string() const;
+
+    const std::string get_table_name() const;
+    const std::string get_alias() const;
+    const std::string get_join_column() const;
+
+private:
+    const std::string create_string() const;
+
+    std::string table_name_;
+    std::string alias_;
+    std::string join_column_;
+
+};
+
 }
+
+#endif //CPPSQL_FROM_H

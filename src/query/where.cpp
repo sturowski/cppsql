@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
-    
-    Created on 20.10.16
+
+    Created on 25.10.16
 
     This file is part of cppsql, a C++ collection.
 
@@ -28,47 +28,23 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <mysqlconnection.h>
-#include <iostream>
-using namespace cppsql;
-int main(int argc, char* argv[])
+
+#include "where.h"
+
+cppsql::Where::Where(const std::string clause, const Operator op)
+        :
+        clause_(clause),
+        operator_(op)
 {
-    try {
-        MySqlConnection con;
-        con.connect("192.168.178.65", "cn_adm", "", "CLUBNET", 0);
-    }
-    catch (std::exception e) {
-        std::cout << e.what() << std::endl;
-    }
-
-//
-//    if (mysql_query(con, "SELECT * FROM USERS"))
-//    {
-//        finish_with_error(con);
-//    }
-//
-//    MYSQL_RES *result = mysql_store_result(con);
-//
-//    if (result == NULL)
-//    {
-//        finish_with_error(con);
-//    }
-//
-//    int num_fields = mysql_num_fields(result);
-//
-//    MYSQL_ROW row;
-//
-//    while ((row = mysql_fetch_row(result)))
-//    {
-//        for(int i = 0; i < num_fields; i++)
-//        {
-//            printf("%s ", row[i] ? row[i] : "NULL");
-//        }
-//        printf("\n");
-//    }
-//
-//    mysql_free_result(result);
-//    mysql_close(con);
-
-    exit(0);
 }
+
+const std::string cppsql::Where::get_clause() const
+{
+    return this->clause_;
+}
+
+const std::string cppsql::Where::get_operator() const
+{
+    return to_s(this->operator_);
+}
+

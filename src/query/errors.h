@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
     
-    Created on 20.10.16
+    Created on 24.10.16
 
     This file is part of cppsql, a C++ collection.
 
@@ -28,47 +28,60 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <mysqlconnection.h>
-#include <iostream>
-using namespace cppsql;
-int main(int argc, char* argv[])
-{
-    try {
-        MySqlConnection con;
-        con.connect("192.168.178.65", "cn_adm", "", "CLUBNET", 0);
+
+#ifndef CPPSQL_ERRORS_H
+#define CPPSQL_ERRORS_H
+#include <exception>
+#include <string>
+namespace cppsql {
+
+static const char* ErrorNames[] = {
+        "All ok.",
+        "Query contains no select statement.",
+        "Query contains no from statement.",
+        "Initialisation of SQL connection failed.",
+        "Failed to connect to SQL database"
+};
+
+enum Errors {
+  OK = 0,
+  QUERY_CONTAINS_NO_SELECT,
+  QUERY_CONTAINS_NO_FROM,
+  SQL_INIT_FAILED,
+  SQL_CONNECT_FAILED,
+  SIZE_OF_ERRORS
+};
+
+class SqlException : public std::exception {
+public:
+    SqlException(Errors error, const std::string errorText = "")
+            :error_(error),
+             errorText_(errorText)
+    {
+
     }
-    catch (std::exception e) {
-        std::cout << e.what() << std::endl;
+    virtual const char* what() const throw()
+    {
+        if (!errorText_.empty())
+            return errorText_.c_str();
+        return ErrorNames[error_];
     }
 
-//
-//    if (mysql_query(con, "SELECT * FROM USERS"))
-//    {
-//        finish_with_error(con);
-//    }
-//
-//    MYSQL_RES *result = mysql_store_result(con);
-//
-//    if (result == NULL)
-//    {
-//        finish_with_error(con);
-//    }
-//
-//    int num_fields = mysql_num_fields(result);
-//
-//    MYSQL_ROW row;
-//
-//    while ((row = mysql_fetch_row(result)))
-//    {
-//        for(int i = 0; i < num_fields; i++)
-//        {
-//            printf("%s ", row[i] ? row[i] : "NULL");
-//        }
-//        printf("\n");
-//    }
-//
-//    mysql_free_result(result);
-//    mysql_close(con);
+    const int code() const
+    {
+        return error_;
+    }
+private:
+    Errors error_;
+    std::string errorText_;
+};
 
-    exit(0);
+
+
+
+
+// statically check that the size of ErrorNames fits the number of Errors
+static_assert(sizeof(cppsql::ErrorNames)/sizeof(char*)==cppsql::Errors::SIZE_OF_ERRORS,
+        "sql sizes dont match"); //Check for Errors and ErrorNames
 }
+#endif //CPPSQL_ERRORS_H

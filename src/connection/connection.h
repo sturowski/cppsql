@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
     
-    Created on 20.10.16
+    Created on 13.11.16
 
-    This file is part of cppsql, a C++ collection.
+    This file is part of tools, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -28,47 +28,33 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <mysqlconnection.h>
-#include <iostream>
-using namespace cppsql;
-int main(int argc, char* argv[])
-{
-    try {
-        MySqlConnection con;
-        con.connect("192.168.178.65", "cn_adm", "", "CLUBNET", 0);
-    }
-    catch (std::exception e) {
-        std::cout << e.what() << std::endl;
-    }
 
-//
-//    if (mysql_query(con, "SELECT * FROM USERS"))
-//    {
-//        finish_with_error(con);
-//    }
-//
-//    MYSQL_RES *result = mysql_store_result(con);
-//
-//    if (result == NULL)
-//    {
-//        finish_with_error(con);
-//    }
-//
-//    int num_fields = mysql_num_fields(result);
-//
-//    MYSQL_ROW row;
-//
-//    while ((row = mysql_fetch_row(result)))
-//    {
-//        for(int i = 0; i < num_fields; i++)
-//        {
-//            printf("%s ", row[i] ? row[i] : "NULL");
-//        }
-//        printf("\n");
-//    }
-//
-//    mysql_free_result(result);
-//    mysql_close(con);
+#ifndef CPPSQL_CONNECTION_H
+#define CPPSQL_CONNECTION_H
+#include <string>
 
-    exit(0);
+namespace cppsql {
+
+class Connection {
+public:
+    Connection() throw() { };
+    virtual ~Connection() { };
+
+    virtual void connect(const std::string host, const std::string user, const std::string password,
+            const std::string database,
+            const int port) throw();
+
+    virtual void close()=0;
+    virtual void single_query(const std::string query) throw() =0;
+
+protected:
+    std::string host_;
+    std::string user_;
+    std::string password_;
+    std::string database_;
+    int port;
+};
+
 }
+
+#endif //CPPSQL_CONNECTION_H

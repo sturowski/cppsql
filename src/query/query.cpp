@@ -30,15 +30,15 @@
 */
 
 #include "errors.h"
-#include "querybuilder.h"
+#include "query.h"
 
-cppsql::QueryBuilder::QueryBuilder()
+cppsql::Query::Query()
         :distinct_(false)
 {
 
 }
 
-cppsql::QueryBuilder::QueryBuilder(const QueryBuilder& builder)
+cppsql::Query::Query(const Query& builder)
         :
         distinct_(builder.distinct_),
         selects_(builder.selects_),
@@ -48,7 +48,7 @@ cppsql::QueryBuilder::QueryBuilder(const QueryBuilder& builder)
 
 }
 
-cppsql::QueryBuilder& cppsql::QueryBuilder::operator=(QueryBuilder& builder)
+cppsql::Query& cppsql::Query::operator=(Query& builder)
 {
     this->distinct_ = builder.distinct_;
     this->selects_ = builder.selects_;
@@ -57,71 +57,71 @@ cppsql::QueryBuilder& cppsql::QueryBuilder::operator=(QueryBuilder& builder)
     return *this;
 }
 
-cppsql::QueryBuilder& cppsql::QueryBuilder::select(Select select)
+cppsql::Query& cppsql::Query::select(Select select)
 {
     this->selects_.push_back(select);
     return *this;
 }
 
-cppsql::QueryBuilder& cppsql::QueryBuilder::select(const std::string column_name)
+cppsql::Query& cppsql::Query::select(const std::string column_name)
 {
     this->selects_.push_back(Select(column_name));
     return *this;
 }
 
-cppsql::QueryBuilder& cppsql::QueryBuilder::select(const std::string column_name, const std::string table_name)
+cppsql::Query& cppsql::Query::select(const std::string column_name, const std::string table_name)
 {
     this->selects_.push_back(Select(column_name, table_name));
     return *this;
 }
 
-cppsql::QueryBuilder& cppsql::QueryBuilder::from(From from)
+cppsql::Query& cppsql::Query::from(From from)
 {
     this->fromClauses_.push_back(from);
     return *this;
 }
-cppsql::QueryBuilder& cppsql::QueryBuilder::from(const std::string table_name)
+cppsql::Query& cppsql::Query::from(const std::string table_name)
 {
     this->fromClauses_.push_back(From(table_name));
     return *this;
 }
-cppsql::QueryBuilder& cppsql::QueryBuilder::from(const std::string table_name, const std::string alias)
+cppsql::Query& cppsql::Query::from(const std::string table_name, const std::string alias)
 {
     this->fromClauses_.push_back(From(table_name, alias));
     return *this;
 }
 
-void cppsql::QueryBuilder::leftJoin(From left_table, From right_table, const Comparison comparison)
+void cppsql::Query::leftJoin(From left_table, From right_table, const Comparison comparison)
 {
     Join join(left_table, right_table, JoinType::LEFT, comparison);
     this->joins_.push_back(join);
 }
 
-void cppsql::QueryBuilder::rightJoin(From left_table, From right_table, const Comparison comparison)
+void cppsql::Query::rightJoin(From left_table, From right_table, const Comparison comparison)
 {
     Join join(left_table, right_table, JoinType::RIGHT, comparison);
     this->joins_.push_back(join);
 }
 
-void cppsql::QueryBuilder::innerJoin(From left_table, From right_table, const Comparison comparison)
+void cppsql::Query::innerJoin(From left_table, From right_table, const Comparison comparison)
 {
     Join join(left_table, right_table, JoinType::INNER, comparison);
     this->joins_.push_back(join);
 }
 
-cppsql::QueryBuilder& cppsql::QueryBuilder::where(Where where)
+cppsql::Query& cppsql::Query::where(Where where)
 {
     this->whereClauses_.push_back(where);
     return *this;
 }
 
-cppsql::QueryBuilder& cppsql::QueryBuilder::where(const std::string clause, const Operator op)
+cppsql::Query& cppsql::Query::where(const std::string clause, const Operator op)
 {
     this->whereClauses_.push_back(Where(clause, op));
     return *this;
 }
 
-const std::string cppsql::QueryBuilder::GetSelectStatement()
+const std::string cppsql::Query::GetSelectStatement()
 {
     if (!this->has_selects())
         throw ErrorNames[Errors::QUERY_CONTAINS_NO_SELECT];
@@ -139,7 +139,7 @@ const std::string cppsql::QueryBuilder::GetSelectStatement()
 
     return statement;
 }
-const std::string cppsql::QueryBuilder::create_select_string() const
+const std::string cppsql::Query::create_select_string() const
 {
     std::string statement = "SELECT ";
     if (is_distinct())
@@ -157,7 +157,7 @@ const std::string cppsql::QueryBuilder::create_select_string() const
     return statement;
 }
 
-const std::string cppsql::QueryBuilder::create_from_string() const
+const std::string cppsql::Query::create_from_string() const
 {
     std::string statement = "FROM ";
     bool first = true; // we need to know if we have the first item, to set the ',' correct
@@ -180,7 +180,7 @@ const std::string cppsql::QueryBuilder::create_from_string() const
     return statement;
 }
 
-const std::string cppsql::QueryBuilder::create_where_string() const
+const std::string cppsql::Query::create_where_string() const
 {
     std::string statement = "WHERE ";
     bool first = true; // we need to know if we have the first item, to set the ',' correct
@@ -196,7 +196,7 @@ const std::string cppsql::QueryBuilder::create_where_string() const
 
 // Returns an bool that says if this object, has no current members
 // to build a useful sql query.
-const bool cppsql::QueryBuilder::is_empty() const
+const bool cppsql::Query::is_empty() const
 {
     bool empty = true;
     if (!this->has_selects())
@@ -209,35 +209,35 @@ const bool cppsql::QueryBuilder::is_empty() const
         empty = false;
     return empty;
 }
-const bool cppsql::QueryBuilder::is_distinct() const
+const bool cppsql::Query::is_distinct() const
 {
     return this->distinct_;
 }
-const bool cppsql::QueryBuilder::has_selects() const
+const bool cppsql::Query::has_selects() const
 {
     return !this->selects_.empty();
 }
 
-const bool cppsql::QueryBuilder::has_fromClauses() const
+const bool cppsql::Query::has_fromClauses() const
 {
     return !this->fromClauses_.empty();
 }
 
-const bool cppsql::QueryBuilder::has_joins() const
+const bool cppsql::Query::has_joins() const
 {
     return !this->joins_.empty();
 }
 
-const bool cppsql::QueryBuilder::has_whereClauses() const
+const bool cppsql::Query::has_whereClauses() const
 {
     return !this->whereClauses_.empty();;
 }
 
-const bool cppsql::QueryBuilder::has_orderByConditions() const
+const bool cppsql::Query::has_orderByConditions() const
 {
     return false;
 }
-const bool cppsql::QueryBuilder::set_distinct(const bool distinct)
+const bool cppsql::Query::set_distinct(const bool distinct)
 {
     this->distinct_ = distinct;
     return this->distinct_;
