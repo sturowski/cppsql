@@ -40,6 +40,7 @@
 #include "join.h"
 #include "select.h"
 #include "where.h"
+#include "object.h"
 
 namespace cppsql {
 

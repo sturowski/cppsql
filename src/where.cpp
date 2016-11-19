@@ -31,20 +31,50 @@
 
 #include "where.h"
 
-cppsql::Where::Where(const std::string clause, const Operator op)
-        :
-        clause_(clause),
-        operator_(op)
+cppsql::Where::Where(std::string left_val, std::string right_val, std::shared_ptr<Object> extension_,
+        Comparison comparison,
+        Operator opt)
+        :left_val_(left_val),
+         right_val_(right_val),
+         extension_(extension_),
+         comparison_(comparison),
+         Object(opt)
 {
-}
+    if (extension_!=nullptr)
+        extension_->parent_ = std::make_shared<Object>(*this);
+};
 
-const std::string cppsql::Where::get_clause() const
+const std::string cppsql::Where::to_string()
 {
-    return this->clause_;
-}
+    std::string statement;
+    statement += to_s(operator_);
+    statement += " ";
 
-const std::string cppsql::Where::get_operator() const
-{
-    return to_s(this->operator_);
+    if (is_first() || (operator_==Operator::AND
+            && extension_->operator_==Operator::OR)) { //hier gehts weiter mit get_operator...
+        statement += "(";
+    }
+    statement += left_val_;
+    statement += " ";
+    statement += to_s(comparison_);
+    if (!right_val_.empty()) {
+        statement += " ";
+        statement += right_val_;
+    }
+
+    if (extension_!=nullptr) {
+        statement += " ";
+        statement += extension_->to_string();
+    }
+    if (!parent_ || (operator_==Operator::OR && parent_ && parent_->operator_==Operator::AND)) {
+        statement += ")";
+    }
+
+    return statement;
 }
+const bool cppsql::Where::is_first() const { return this->extension_ && !this->parent_; }
+cppsql::Operator cppsql::Where::get_operator_() const
+{
+    return operator_;
+};
 

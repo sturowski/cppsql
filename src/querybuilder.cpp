@@ -117,7 +117,7 @@ cppsql::QueryBuilder& cppsql::QueryBuilder::where(Where where)
 
 cppsql::QueryBuilder& cppsql::QueryBuilder::where(const std::string clause, const Operator op)
 {
-    this->whereClauses_.push_back(Where(clause, op));
+//    this->whereClauses_.push_back(Where(clause, op));
     return *this;
 }
 
@@ -182,16 +182,16 @@ const std::string cppsql::QueryBuilder::create_from_string() const
 
 const std::string cppsql::QueryBuilder::create_where_string() const
 {
-    std::string statement = "WHERE ";
-    bool first = true; // we need to know if we have the first item, to set the ',' correct
-    for (const auto& where : this->whereClauses_) {
-        if (!first)
-            statement += " "+where.get_operator()+" ";
-        else
-            first = false;
-        statement += where.get_clause();
-    }
-    return statement;
+//    std::string statement = "WHERE ";
+//    bool first = true; // we need to know if we have the first item, to set the ',' correct
+//    for (const auto& where : this->whereClauses_) {
+//        if (!first)
+//            statement += " "+where.get_operator()+" ";
+//        else
+//            first = false;
+//        statement += where.get_clause();
+//    }
+//    return statement;
 }
 
 // Returns an bool that says if this object, has no current members

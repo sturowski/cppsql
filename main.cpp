@@ -30,64 +30,39 @@
 */
 
 #include <map>
-#include <string>
+#include <iostream>
+#include <memory>
+#include "src/defines.h"
+#include "src/object.h"
+#include "src/where.h"
 #include "src/querybuilder.h"
-#include "src/resourcemanager.h"
 
 using namespace cppsql;
 
-QueryBuilder* getBuilder(int key)
-{
-    QueryBuilder* qb = new QueryBuilder();
-    if (key==1) {
-        qb->select("Hallo");
-    }
-    else if (key==2) {
-        qb->from("Welt");
-    }
-    return qb;
-}
-
-
-class bla {
-private:
-    ResourceManager<int, QueryBuilder*, bla> manager;
-
-public:
-    bla() :
-            manager(this)
-    {
-
-
-    }
-
-    QueryBuilder* create_resource(int key)
-    {
-        if(key == 1)
-        {
-            QueryBuilder* q = new QueryBuilder();
-            q->select("Hallo").from("Welt");
-            return q;
-        }
-        if(key == 2)
-        {
-            QueryBuilder* q = new QueryBuilder();
-            q->select("Welt").from("Hallo");
-            return q;
-        }
-    }
-
-
-    void process(int stmt){
-        std::cout << manager.get_resource(stmt)->GetSelectStatement() << std::endl;
-    }
-
-
-};
-
 int main(int argc, char* argv[])
 {
-    bla b;
-    b.process(1);
-    b.process(2);
+
+
+
+    //AND (DATE_LAST IS NULL OR DATE_LAST = 0 OR DATE_LAST >= 20161107)
+    Where test("DATE_LAST", "20161107", nullptr, Comparison::GREATER_EQUALS_THAN, Operator::OR);
+    Where test1("DATE_LAST", "0", std::make_shared<Where>(test), Comparison::EQUALS, Operator::OR);
+    Where test2("DATE_LAST", "", std::make_shared<Where>(test1), Comparison::IS_NULL, Operator::AND);
+    std::cout << test2.to_string() << std::endl;
+
+    //AND (ORDER_ID IN (SELECT ORDER_ID FROM SEPA_STANDIN_ODERS))
+//    QueryBuilder builder;
+//    builder.select("ORDER_ID").from("SEPA_STANDIN_ODERS");
+//    Where test3("ORDER_ID", "", std::make_shared<QueryBuilder>(builder), Comparison::IN, Operator::AND);
+//    std::cout << test3.to_string() << std::endl;
+    // das geht so nicht, eine query muss ein right value sein
+
+    //AND (DATE_END IS NULL AND (DATE_BEGIN IS NOT NULL OR TYPE = "NO_END"))
+    Where test4("TYPE", "'NO_END'", nullptr, Comparison::EQUALS, Operator::OR);
+    Where test5("DATE_BEGIN", "", std::make_shared<Where>(test4), Comparison::IS_NOT_NULL, Operator::AND);
+    Where test6("DATE_END", "", std::make_shared<Where>(test5), Comparison::IS_NULL, Operator::AND);
+    std::cout << test6.to_string() << std::endl;
+
+
+
 }

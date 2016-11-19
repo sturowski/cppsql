@@ -37,7 +37,10 @@ static const char* ComparisonNames[] = {
         ">",
         "<",
         ">=",
-        "<="
+        "<=",
+        "IS NULL",
+        "IS NOT NULL",
+        "IN"
 };
 
 ::std::string cppsql::to_s(Comparison cmp)
@@ -68,7 +71,7 @@ static const char* OperatorsNames[] = {
 
 // Checks
 // statically check that the size of ComparisonNames fits the number of Comparison
-static_assert(sizeof(ComparisonNames)/sizeof(char*)==static_cast<int>(cppsql::Comparison::LOWER_EQUALS_THAN)+1,
+static_assert(sizeof(ComparisonNames)/sizeof(char*)==static_cast<int>(cppsql::Comparison::IN)+1,
         "Comparison sizes dont match");
 
 // statically check that the size of JoinTypeNames fits the number of JoinType
