@@ -32,6 +32,9 @@
 #ifndef CPPSQL_CONNECTION_H
 #define CPPSQL_CONNECTION_H
 #include <string>
+#include <row.h>
+#include <vector>
+#include "table.h"
 
 namespace cppsql {
 
@@ -45,7 +48,10 @@ public:
             const int port) throw();
 
     virtual void close()=0;
-    virtual void single_query(const std::string query) throw() =0;
+    virtual Table query(const std::string query) throw() =0;
+    virtual void start_transaction() throw() =0;
+    virtual void commit() throw() =0;
+    virtual void rollback() throw() =0;
 
 protected:
     std::string host_;

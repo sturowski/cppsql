@@ -26,7 +26,8 @@ set(SOURCE_FILES
         src/connection/mysqlconnection.h
         src/connection/mysqlconnection.cpp
         src/connection/connection.cpp
-        src/connection/connection.h)
+        src/connection/connection.h
+        src/connection/row.h src/connection/table.h src/connection/row.cpp src/connection/table.cpp)
 
 add_executable(cppsql main.cpp ${SOURCE_FILES})
 target_link_libraries(cppsql mysqlclient)

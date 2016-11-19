@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
     
-    Created on 13.11.16
+    Created on 19.11.16
 
     This file is part of tools, a C++ collection.
 
@@ -29,28 +29,24 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPPSQL_MYSQLCONNECTION_H
-#define CPPSQL_MYSQLCONNECTION_H
-#include <my_global.h>
-#include <mysql.h>
-#include <connection.h>
-
+#ifndef CPPSQL_ROW_H
+#define CPPSQL_ROW_H
+#include <vector>
+#include <string>
 namespace cppsql {
-
-class MySqlConnection : public Connection {
+class Row {
 public:
-    MySqlConnection() throw();
-    virtual ~MySqlConnection();
-    virtual void connect(const std::string host, const std::string user, const std::string password,
-            const std::string database, const int port) throw() override;
-    virtual void close() override;
-    virtual Table query(const std::string query) throw() override;
-    virtual void start_transaction() throw() override;
-    virtual void commit() throw() override;
-    virtual void rollback() throw() override;
-protected:
-    MYSQL* con_;
+    std::string& operator[](std::size_t idx);
+    const std::string& operator[](std::size_t idx) const;
+    void add_column(std::string column);
+    unsigned long size();
+    std::string to_string();
+    const std::string to_string() const;
 
+private:
+    std::vector<std::string> columns_;
+    std::string create_string() const;
 };
+
 }
-#endif //CPPSQL_MYSQLCONNECTION_H
+#endif //CPPSQL_ROW_H

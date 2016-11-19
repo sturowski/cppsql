@@ -40,7 +40,12 @@ static const char* ErrorNames[] = {
         "Query contains no select statement.",
         "Query contains no from statement.",
         "Initialisation of SQL connection failed.",
-        "Failed to connect to SQL database"
+        "Failed to connect to SQL database",
+        "The query is empty.",
+        "Getting error by executing the query",
+        "Start transaction failed",
+        "Commit transaction failed",
+        "Rollback transaction failed"
 };
 
 enum Errors {
@@ -49,6 +54,11 @@ enum Errors {
   QUERY_CONTAINS_NO_FROM,
   SQL_INIT_FAILED,
   SQL_CONNECT_FAILED,
+  SQL_EMPTY_QUERY,
+  SQL_QUERY_FAILED,
+  SQL_START_TRANSACTION_FAILED,
+  SQL_COMMIT_TRANSACTION_FAILED,
+  SQL_ROLLBACK_TRANSACTION_FAILED,
   SIZE_OF_ERRORS
 };
 
