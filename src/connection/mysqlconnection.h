@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
     
-    Created on 20.10.16
+    Created on 13.11.16
 
-    This file is part of cppsql, a C++ collection.
+    This file is part of tools, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -28,10 +28,32 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <mysqlconnection.h>
-#include <iostream>
-using namespace cppsql;
-int main(int argc, char* argv[])
-{
 
+#ifndef CPPSQL_MYSQLCONNECTION_H
+#define CPPSQL_MYSQLCONNECTION_H
+#include <my_global.h>
+#include <mysql.h>
+#undef min
+#undef max
+#undef test
+#include <connection.h>
+
+namespace cppsql {
+
+class MySqlConnection : public Connection {
+public:
+    MySqlConnection() throw();
+    virtual ~MySqlConnection();
+    virtual void connect(const std::string host, const std::string user, const std::string password,
+            const std::string database, const int port) throw() override;
+    virtual void close() override;
+    virtual Table query(const std::string query) throw() override;
+    virtual void start_transaction() throw() override;
+    virtual void commit() throw() override;
+    virtual void rollback() throw() override;
+protected:
+    MYSQL* con_;
+
+};
 }
+#endif //CPPSQL_MYSQLCONNECTION_H

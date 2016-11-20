@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
     
-    Created on 20.10.16
+    Created on 19.11.16
 
-    This file is part of cppsql, a C++ collection.
+    This file is part of tools, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -28,10 +28,25 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <mysqlconnection.h>
-#include <iostream>
-using namespace cppsql;
-int main(int argc, char* argv[])
-{
 
+#include <table.h>
+cppsql::Row& cppsql::Table::operator[](std::size_t idx)
+{
+    return rows_[idx];
+}
+const cppsql::Row& cppsql::Table::operator[](std::size_t idx) const
+{
+    return rows_[idx];
+}
+void cppsql::Table::add_row(cppsql::Row row)
+{
+    rows_.push_back(row);
+}
+unsigned long cppsql::Table::size()
+{
+    return rows_.size();
+}
+const std::vector<cppsql::Row>& cppsql::Table::rows()
+{
+    return rows_;
 }

@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
     
-    Created on 20.10.16
+    Created on 13.11.16
 
-    This file is part of cppsql, a C++ collection.
+    This file is part of tools, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -28,10 +28,14 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <mysqlconnection.h>
-#include <iostream>
-using namespace cppsql;
-int main(int argc, char* argv[])
-{
 
+#include "connection.h"
+void cppsql::Connection::connect(const std::string host, const std::string user, const std::string password,
+        const std::string database, const int port) throw()
+{
+    this->host_ = host;
+    this->user_ = user;
+    this->password_ = password;
+    this->database_ = database;
+    this->port = port;
 }

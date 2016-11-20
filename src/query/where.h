@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
-    
-    Created on 20.10.16
+
+    Created on 25.10.16
 
     This file is part of cppsql, a C++ collection.
 
@@ -28,10 +28,25 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <mysqlconnection.h>
-#include <iostream>
-using namespace cppsql;
-int main(int argc, char* argv[])
-{
+
+#ifndef CPPSQL_WHERE_H
+#define CPPSQL_WHERE_H
+#include <string>
+#include "defines.h"
+
+namespace cppsql {
+
+class Where {
+public:
+    Where(const std::string clause, const Operator op);
+
+    const std::string get_clause() const;
+    const std::string get_operator() const;
+
+private:
+    std::string clause_;
+    Operator operator_;
+};
 
 }
+#endif //CPPSQL_WHERE_H

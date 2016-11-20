@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
-    
-    Created on 24.10.16
+
+    Created on 25.10.16
 
     This file is part of cppsql, a C++ collection.
 
@@ -28,27 +28,31 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifndef CPPSQL_JOIN_H
+#define CPPSQL_JOIN_H
 
-#ifndef CPPSQL_ERRORS_H
-#define CPPSQL_ERRORS_H
+#include <string>
+#include "defines.h"
+#include "from.h"
 
 namespace cppsql {
 
-enum Errors {
-  OK = 0,
-  QUERY_CONTAINS_NO_SELECT,
-  QUERY_CONTAINS_NO_FROM,
-  SIZE_OF_ERRORS
+class Join {
+public:
+
+    Join(From left_table,
+            From right_table,
+            const JoinType type,
+            const Comparison comparison);
+
+    const std::string GetJoinStatement() const;
+
+private:
+    From left_table_;
+    From right_table_;
+    JoinType type_;
+    Comparison comparison_;
 };
 
-static const char* ErrorNames[] = {
-        "All ok.",
-        "Query contains no select statement.",
-        "Query contains no from statement."
-};
-
-// statically check that the size of ErrorNames fits the number of Errors
-static_assert(sizeof(cppsql::ErrorNames)/sizeof(char*)==cppsql::Errors::SIZE_OF_ERRORS,
-        "sql sizes dont match"); //Check for Errors and ErrorNames
 }
-#endif //CPPSQL_ERRORS_H
+#endif //CPPSQL_JOIN_H
