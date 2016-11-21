@@ -31,15 +31,18 @@
 
 #ifndef CPPSQL_OBJECT_H
 #define CPPSQL_OBJECT_H
+
 #include <string>
+
 namespace cppsql {
 class Object {
 public:
-    Object(Operator opt)
-            :parent_(nullptr), operator_(opt) { }
-    virtual const std::string to_string() { };
-    std::shared_ptr<Object> parent_;
-    Operator operator_;
+    Object() { }
+
+    virtual ~Object() { }
+
+    virtual const std::string to_string() const =0;
+    virtual const bool empty() const =0;
 };
 }
 #endif //CPPSQL_OBJECT_H

@@ -31,28 +31,42 @@
 
 #ifndef CPPSQL_WHERE_H
 #define CPPSQL_WHERE_H
+
 #include <string>
 #include <memory>
-#include "defines.h"
-#include "object.h"
+#include <defines.h>
+#include <object.h>
+#include <value.h>
+#include <query.h>
 
 namespace cppsql {
+class Query;
 
-class Where : public Object {
+class Where {
 private:
-    std::string left_val_;
-    std::string right_val_;
-    std::shared_ptr<Object> extension_;
+    std::shared_ptr<Object> left_val_;
+    std::shared_ptr<Object> right_val_;
+    std::shared_ptr<Where> extension_;
+    std::shared_ptr<Where> parent_;
     Comparison comparison_;
-
-    const bool is_first() const;
+    Operator operator_;
 
 public:
-    Where(std::string left_val, std::string right_val, std::shared_ptr<Object> extension_, Comparison comparison,
+    Where(std::string left_val, std::string right_val, Comparison comparison, Operator opt);
+    Where(std::string left_val, Query& right_val, Comparison comparison, Operator opt);
+    Where(Query& left_val, std::string right_val, Comparison comparison, Operator opt);
+    Where(std::string left_val, std::string right_val, Where& extension, Comparison comparison,
             Operator opt);
+    Where(std::string left_val, Query&  right_val, Where&  extension,
+            Comparison comparison,
+            Operator opt);
+    Where(Query&  left_val, std::string right_val, Where&  extension,
+            Comparison comparison,
+            Operator opt);
+    const std::string to_string(bool with_operator=true) const;
 
-    const std::string to_string() override;
     Operator get_operator_() const;
+    const bool is_first() const;
 };
 
 }

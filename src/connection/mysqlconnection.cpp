@@ -30,7 +30,7 @@
 */
 
 #include "mysqlconnection.h"
-#include <errors.h>
+#include "../defines/errors.h"
 /**
  * The basic contructor, will initialize this MySql connection.
  * If the mysql_init fails and con will be nullpr it throws an exception.

@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
-    
-    Created on 19.11.16
 
-    This file is part of tools, a C++ collection.
+    Created on 21.11.16
+
+    This file is part of cppsql, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -29,43 +29,22 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <row.h>
-std::string& cppsql::Row::operator[](std::size_t idx)
-{
-    return columns_[idx];
-}
-const std::string& cppsql::Row::operator[](std::size_t idx) const
-{
-    return columns_[idx];
-}
-void cppsql::Row::add_column(std::string column)
-{
-    columns_.push_back(column);
-}
-unsigned long cppsql::Row::size()
-{
-    return columns_.size();
-}
-std::string cppsql::Row::to_string()
-{
-    return create_string();
-}
-const std::string cppsql::Row::to_string() const
-{
-    return create_string();
-}
-std::string cppsql::Row::create_string() const
-{
-    std::string row = "[";
-    bool first = true;
-    for (const auto& column : this->columns_) {
-        if (!first)
-            row += ", ";
-        else
-            first = false;
+#ifndef CPPSQL_VALUE_H
+#define CPPSQL_VALUE_H
 
-        row += column;
-    }
-    row += "]";
-    return row;
+#include "object.h"
+
+namespace cppsql {
+class Value : public Object {
+public:
+    Value(std::string val);
+    virtual const std::string to_string() const override;
+
+    virtual const bool empty() const override;
+
+private:
+    std::string value_;
+};
 }
+
+#endif //CPPSQL_VALUE_H

@@ -32,9 +32,9 @@
 #ifndef CPPSQL_CONNECTION_H
 #define CPPSQL_CONNECTION_H
 #include <string>
-#include <row.h>
+#include "../table/row.h"
 #include <vector>
-#include "table.h"
+#include "../table/table.h"
 
 namespace cppsql {
 

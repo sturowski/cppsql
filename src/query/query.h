@@ -43,8 +43,9 @@
 #include "object.h"
 
 namespace cppsql {
+class Where;
 
-class Query {
+class Query : public Object{
 public:
     Query();
     Query(const Query& builder);
@@ -59,22 +60,36 @@ public:
     Query& from(const std::string table_name);
     Query& from(const std::string table_name, const std::string alias);
 
-    void leftJoin(From left_table,
+    void left_join(From left_table,
             From right_table,
             const Comparison comparison);
-    void rightJoin(From left_table,
+    void right_join(From left_table,
             From right_table,
             const Comparison comparison);
-    void innerJoin(From left_table,
+    void inner_join(From left_table,
             From right_table,
             const Comparison comparison);
 
     Query& where(Where where);
-    Query& where(const std::string clause, const Operator op);
+    Query& and_where(std::string left_val, std::string right_val, Comparison comparison);
+    Query& and_where(std::string left_val, Query& right_val, Comparison comparison);
+    Query& and_where(Query& left_val, std::string right_val, Comparison comparison);
+    Query& and_where(std::string left_val, std::string right_val, Where& extension, Comparison comparison);
+    Query& and_where(std::string left_val, Query&  right_val, Where&  extension, Comparison comparison);
+    Query& and_where(Query&  left_val, std::string right_val, Where&  extension, Comparison comparison);
+    Query& or_where(std::string left_val, std::string right_val, Comparison comparison);
+    Query& or_where(std::string left_val, Query& right_val, Comparison comparison);
+    Query& or_where(Query& left_val, std::string right_val, Comparison comparison);
+    Query& or_where(std::string left_val, std::string right_val, Where& extension, Comparison comparison);
+    Query& or_where(std::string left_val, Query&  right_val, Where&  extension, Comparison comparison);
+    Query& or_where(Query&  left_val, std::string right_val, Where&  extension, Comparison comparison);
 
-    const std::string GetSelectStatement();
 
-    const bool is_empty() const;
+
+    const std::string get_select_statement() const;
+
+    virtual const bool empty() const override;
+    virtual const std::string to_string() const override;
     const bool is_distinct() const;
     const bool has_selects() const;
     const bool has_fromClauses() const;
@@ -87,6 +102,8 @@ public:
     const std::string create_select_string() const;
     const std::string create_from_string() const;
     const std::string create_where_string() const;
+
+
 
 private:
     bool distinct_;
