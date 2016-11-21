@@ -44,20 +44,20 @@
 
 namespace cppsql {
 
-class QueryBuilder {
+class Query {
 public:
-    QueryBuilder();
-    QueryBuilder(const QueryBuilder& builder);
-    QueryBuilder& operator=(QueryBuilder& builder);
-    virtual ~QueryBuilder() { }
+    Query();
+    Query(const Query& builder);
+    Query& operator=(Query& builder);
+    virtual ~Query() { }
 
-    QueryBuilder& select(Select select);
-    QueryBuilder& select(const std::string column_name);
-    QueryBuilder& select(const std::string column_name, const std::string table_name);
+    Query& select(Select select);
+    Query& select(const std::string column_name);
+    Query& select(const std::string column_name, const std::string table_name);
 
-    QueryBuilder& from(From from);
-    QueryBuilder& from(const std::string table_name);
-    QueryBuilder& from(const std::string table_name, const std::string alias);
+    Query& from(From from);
+    Query& from(const std::string table_name);
+    Query& from(const std::string table_name, const std::string alias);
 
     void leftJoin(From left_table,
             From right_table,
@@ -69,8 +69,8 @@ public:
             From right_table,
             const Comparison comparison);
 
-    QueryBuilder& where(Where where);
-    QueryBuilder& where(const std::string clause, const Operator op);
+    Query& where(Where where);
+    Query& where(const std::string clause, const Operator op);
 
     const std::string GetSelectStatement();
 
