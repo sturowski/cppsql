@@ -31,7 +31,7 @@ set(SOURCE_FILES
         src/connection/table.h
         src/connection/row.cpp
         src/connection/table.cpp
-        src/object.h)
+        src/query/object.h)
 
 add_executable(cppsql main.cpp ${SOURCE_FILES})
 target_link_libraries(cppsql mysqlclient)

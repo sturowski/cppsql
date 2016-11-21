@@ -32,10 +32,10 @@
 #include <map>
 #include <iostream>
 #include <memory>
-#include "src/defines.h"
-#include "src/object.h"
-#include "src/where.h"
-#include "src/querybuilder.h"
+#include <defines.h>
+#include <object.h>
+#include <where.h>
+#include <query.h>
 
 using namespace cppsql;
 
