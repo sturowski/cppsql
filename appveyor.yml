@@ -22,7 +22,10 @@ environment:
 
 matrix:
   fast_finish: false
-
+  
+services:
+  - mysql
+  
 init:
   #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
   - cmake --version
