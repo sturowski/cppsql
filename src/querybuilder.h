@@ -52,7 +52,7 @@ public:
 
     QueryBuilder& select(Select select);
     QueryBuilder& select(const std::string column_name);
-    QueryBuilder& select(const std::string column_name, const std::string table_name);
+    QueryBuilder& select(const std::string column_name, const std::string table_name, const std::string alias = "");
 
     QueryBuilder& from(From from);
     QueryBuilder& from(const std::string table_name);

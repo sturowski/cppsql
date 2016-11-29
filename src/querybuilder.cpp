@@ -68,9 +68,10 @@ cppsql::QueryBuilder& cppsql::QueryBuilder::select(const std::string column_name
     return *this;
 }
 
-cppsql::QueryBuilder& cppsql::QueryBuilder::select(const std::string column_name, const std::string table_name)
+cppsql::QueryBuilder& cppsql::QueryBuilder::select(const std::string column_name, const std::string table_name,
+        const std::string alias)
 {
-    this->selects_.push_back(Select(column_name, table_name));
+    this->selects_.push_back(Select(column_name, table_name, alias));
     return *this;
 }
 
