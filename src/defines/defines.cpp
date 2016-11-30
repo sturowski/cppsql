@@ -28,31 +28,56 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef CPPSQL_JOIN_H
-#define CPPSQL_JOIN_H
 
-#include <string>
-#include "../defines/defines.h"
-#include "from.h"
+#include "defines.h"
 
-namespace cppsql {
-
-class Join {
-public:
-
-    Join(From left_table,
-            From right_table,
-            const JoinType type,
-            const Comparison comparison);
-
-    const std::string GetJoinStatement() const;
-
-private:
-    From left_table_;
-    From right_table_;
-    JoinType type_;
-    Comparison comparison_;
+static const char* ComparisonNames[] = {
+        "=",
+        "<>",
+        ">",
+        "<",
+        ">=",
+        "<=",
+        "IS NULL",
+        "IS NOT NULL",
+        "IN"
 };
 
+::std::string cppsql::to_s(Comparison cmp)
+{
+    return ComparisonNames[static_cast<int>(cmp)];
 }
-#endif //CPPSQL_JOIN_H
+
+static const char* JoinTypeNames[] = {
+        "LEFT JOIN",
+        "RIGHT JOIN",
+        "INNER JOIN"
+};
+
+::std::string cppsql::to_s(JoinType type)
+{
+    return JoinTypeNames[static_cast<int>(type)];
+}
+
+static const char* OperatorsNames[] = {
+        "AND",
+        "OR"
+};
+
+::std::string cppsql::to_s(Operator op)
+{
+    return OperatorsNames[static_cast<int>(op)];
+}
+
+// Checks
+// statically check that the size of ComparisonNames fits the number of Comparison
+static_assert(sizeof(ComparisonNames)/sizeof(char*)==static_cast<int>(cppsql::Comparison::IN)+1,
+        "Comparison sizes dont match");
+
+// statically check that the size of JoinTypeNames fits the number of JoinType
+static_assert(sizeof(JoinTypeNames)/sizeof(char*)==static_cast<int>(cppsql::JoinType::INNER)+1,
+        "JoinType sizes dont match");
+
+// statically check that the size of OperatorsNames fits the number of Operator
+static_assert(sizeof(OperatorsNames)/sizeof(char*)==static_cast<int>(cppsql::Operator::OR)+1,
+        "Operator sizes dont match");

@@ -29,7 +29,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "errors.h"
+#include "../defines/errors.h"
 #include "query.h"
 
 cppsql::Query::Query()
@@ -92,19 +92,19 @@ cppsql::Query& cppsql::Query::from(const std::string table_name, const std::stri
     return *this;
 }
 
-void cppsql::Query::leftJoin(From left_table, From right_table, const Comparison comparison)
+void cppsql::Query::left_join(From left_table, From right_table, const Comparison comparison)
 {
     Join join(left_table, right_table, JoinType::LEFT, comparison);
     this->joins_.push_back(join);
 }
 
-void cppsql::Query::rightJoin(From left_table, From right_table, const Comparison comparison)
+void cppsql::Query::right_join(From left_table, From right_table, const Comparison comparison)
 {
     Join join(left_table, right_table, JoinType::RIGHT, comparison);
     this->joins_.push_back(join);
 }
 
-void cppsql::Query::innerJoin(From left_table, From right_table, const Comparison comparison)
+void cppsql::Query::inner_join(From left_table, From right_table, const Comparison comparison)
 {
     Join join(left_table, right_table, JoinType::INNER, comparison);
     this->joins_.push_back(join);
@@ -116,13 +116,7 @@ cppsql::Query& cppsql::Query::where(Where where)
     return *this;
 }
 
-cppsql::Query& cppsql::Query::where(const std::string clause, const Operator op)
-{
-    this->whereClauses_.push_back(Where(clause, op));
-    return *this;
-}
-
-const std::string cppsql::Query::GetSelectStatement()
+const std::string cppsql::Query::get_select_statement() const
 {
     if (!this->has_selects())
         throw ErrorNames[Errors::QUERY_CONTAINS_NO_SELECT];
@@ -186,18 +180,20 @@ const std::string cppsql::Query::create_where_string() const
     std::string statement = "WHERE ";
     bool first = true; // we need to know if we have the first item, to set the ',' correct
     for (const auto& where : this->whereClauses_) {
-        if (!first)
-            statement += " "+where.get_operator()+" ";
-        else
+        if (first) {
+            statement += where.to_string(false);
             first = false;
-        statement += where.get_clause();
+        }
+        else
+            statement += " "+where.to_string();
+
     }
     return statement;
 }
 
 // Returns an bool that says if this object, has no current members
 // to build a useful sql query.
-const bool cppsql::Query::is_empty() const
+const bool cppsql::Query::empty() const
 {
     bool empty = true;
     if (!this->has_selects())
@@ -242,6 +238,101 @@ const bool cppsql::Query::set_distinct(const bool distinct)
 {
     this->distinct_ = distinct;
     return this->distinct_;
+}
+
+const std::string cppsql::Query::to_string() const
+{
+    return get_select_statement();
+}
+
+cppsql::Query& cppsql::Query::and_where(std::string left_val, std::string right_val, cppsql::Comparison comparison)
+{
+    Where where (left_val, right_val, comparison, Operator::AND);
+    this->whereClauses_.push_back(where);
+    return *this;
+}
+
+cppsql::Query& cppsql::Query::and_where(std::string left_val, cppsql::Query& right_val, cppsql::Comparison comparison)
+{
+    Where where (left_val, right_val, comparison, Operator::AND);
+    this->whereClauses_.push_back(where);
+    return *this;
+}
+
+cppsql::Query& cppsql::Query::and_where(cppsql::Query& left_val, std::string right_val, cppsql::Comparison comparison)
+{
+    Where where (left_val, right_val, comparison, Operator::AND);
+    this->whereClauses_.push_back(where);
+    return *this;
+}
+
+cppsql::Query& cppsql::Query::and_where(std::string left_val, std::string right_val, cppsql::Where& extension,
+        cppsql::Comparison comparison)
+{
+    Where where (left_val, right_val, comparison, Operator::AND);
+    this->whereClauses_.push_back(where);
+    return *this;
+}
+
+cppsql::Query& cppsql::Query::and_where(std::string left_val, cppsql::Query& right_val, cppsql::Where& extension,
+        cppsql::Comparison comparison)
+{
+    Where where (left_val, right_val, comparison, Operator::AND);
+    this->whereClauses_.push_back(where);
+    return *this;
+}
+
+cppsql::Query& cppsql::Query::and_where(cppsql::Query& left_val, std::string right_val, cppsql::Where& extension,
+        cppsql::Comparison comparison)
+{
+    Where where (left_val, right_val, comparison, Operator::AND);
+    this->whereClauses_.push_back(where);
+    return *this;
+}
+
+cppsql::Query& cppsql::Query::or_where(std::string left_val, std::string right_val, cppsql::Comparison comparison)
+{
+    Where where (left_val, right_val, comparison, Operator::OR);
+    this->whereClauses_.push_back(where);
+    return *this;
+}
+
+cppsql::Query& cppsql::Query::or_where(std::string left_val, cppsql::Query& right_val, cppsql::Comparison comparison)
+{
+    Where where (left_val, right_val, comparison, Operator::OR);
+    this->whereClauses_.push_back(where);
+    return *this;
+}
+
+cppsql::Query& cppsql::Query::or_where(cppsql::Query& left_val, std::string right_val, cppsql::Comparison comparison)
+{
+    Where where (left_val, right_val, comparison, Operator::OR);
+    this->whereClauses_.push_back(where);
+    return *this;
+}
+
+cppsql::Query& cppsql::Query::or_where(std::string left_val, std::string right_val, cppsql::Where& extension,
+        cppsql::Comparison comparison)
+{
+    Where where (left_val, right_val, comparison, Operator::OR);
+    this->whereClauses_.push_back(where);
+    return *this;
+}
+
+cppsql::Query& cppsql::Query::or_where(std::string left_val, cppsql::Query& right_val, cppsql::Where& extension,
+        cppsql::Comparison comparison)
+{
+    Where where (left_val, right_val, comparison, Operator::OR);
+    this->whereClauses_.push_back(where);
+    return *this;
+}
+
+cppsql::Query& cppsql::Query::or_where(cppsql::Query& left_val, std::string right_val, cppsql::Where& extension,
+        cppsql::Comparison comparison)
+{
+    Where where (left_val, right_val, comparison, Operator::OR);
+    this->whereClauses_.push_back(where);
+    return *this;
 }
 
 

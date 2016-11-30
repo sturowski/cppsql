@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
 
-    Created on 25.10.16
+    Created on 21.11.16
 
     This file is part of cppsql, a C++ collection.
 
@@ -28,31 +28,20 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef CPPSQL_JOIN_H
-#define CPPSQL_JOIN_H
 
-#include <string>
-#include "../defines/defines.h"
-#include "from.h"
+#include "value.h"
 
-namespace cppsql {
 
-class Join {
-public:
+cppsql::Value::Value(std::string val)
+        :value_(val) { }
 
-    Join(From left_table,
-            From right_table,
-            const JoinType type,
-            const Comparison comparison);
 
-    const std::string GetJoinStatement() const;
-
-private:
-    From left_table_;
-    From right_table_;
-    JoinType type_;
-    Comparison comparison_;
-};
-
+const std::string cppsql::Value::to_string() const
+{
+    return value_;
 }
-#endif //CPPSQL_JOIN_H
+
+const bool cppsql::Value::empty() const
+{
+    return value_.empty();
+}

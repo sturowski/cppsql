@@ -31,21 +31,42 @@
 
 #ifndef CPPSQL_WHERE_H
 #define CPPSQL_WHERE_H
+
 #include <string>
-#include "defines.h"
+#include <memory>
+#include <defines.h>
+#include <object.h>
+#include <value.h>
+#include <query.h>
 
 namespace cppsql {
+class Query;
 
 class Where {
-public:
-    Where(const std::string clause, const Operator op);
-
-    const std::string get_clause() const;
-    const std::string get_operator() const;
-
 private:
-    std::string clause_;
+    std::shared_ptr<Object> left_val_;
+    std::shared_ptr<Object> right_val_;
+    std::shared_ptr<Where> extension_;
+    std::shared_ptr<Where> parent_;
+    Comparison comparison_;
     Operator operator_;
+
+public:
+    Where(std::string left_val, std::string right_val, Comparison comparison, Operator opt);
+    Where(std::string left_val, Query& right_val, Comparison comparison, Operator opt);
+    Where(Query& left_val, std::string right_val, Comparison comparison, Operator opt);
+    Where(std::string left_val, std::string right_val, Where& extension, Comparison comparison,
+            Operator opt);
+    Where(std::string left_val, Query&  right_val, Where&  extension,
+            Comparison comparison,
+            Operator opt);
+    Where(Query&  left_val, std::string right_val, Where&  extension,
+            Comparison comparison,
+            Operator opt);
+    const std::string to_string(bool with_operator=true) const;
+
+    Operator get_operator_() const;
+    const bool is_first() const;
 };
 
 }
