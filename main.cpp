@@ -45,14 +45,25 @@ int main(int argc, char* argv[])
         sqb.select("PHONE", "PH");
         sqb.from("CUSTOMER", "C");
         sqb.leftJoin(From("PERSON", "P", "PERSON_ID"), From("PHONE", "PH", "PERSON_ID"), Comparison::EQUALS);
-        sqb.where("C.PERSON_ID = P.PERSON_ID", Operator::AND)
-                .where("C.CUSTOMER_ID like ?", Operator::AND)
-                .where("C.CLIENT = ?", Operator::AND)
-                .where("C.COUNTRY_CODE like ?", Operator::AND)
-                .where("C.BANK_CODE like ?", Operator::AND)
-                .where("C.PERSON_ID like ?", Operator::AND)
-                .where("(P.NAME1 is null or upper(P.NAME1) like ?)", Operator::AND)
-                .where("(P.NAME2 is null or upper(P.NAME2) like ?)", Operator::AND);
+        sqb.and_where("C.PERSON", "P.PERSON_ID", EQUALS);
+        sqb.and_where("C.CUSTOMER_ID", "?", LIKE);
+        sqb.and_where("C.CLIENT", "?", EQUALS);
+        sqb.and_where("C.COUNTRY_CODE", "?", LIKE);
+        sqb.and_where("C.BANK_CODE", "?", LIKE);
+        sqb.and_where("C.PERSON_ID", "?", LIKE);
+        Where innerName1("upper(P.NAME1", "?", LIKE, OR);
+        sqb.and_where("P.NAME1", "", &innerName1, IS_NULL);
+        Where innerName2("upper(P.NAME2", "?", LIKE, OR);
+        sqb.and_where("P.NAME2", "", &innerName2, IS_NULL);
+
+//        sqb.where("C.PERSON_ID = P.PERSON_ID", Operator::AND)
+//                .where("C.CUSTOMER_ID like ?", Operator::AND)
+//                .where("C.CLIENT = ?", Operator::AND)
+//                .where("C.COUNTRY_CODE like ?", Operator::AND)
+//                .where("C.BANK_CODE like ?", Operator::AND)
+//                .where("C.PERSON_ID like ?", Operator::AND)
+//                .where("(P.NAME1 is null or upper(P.NAME1) like ?)", Operator::AND)
+//                .where("(P.NAME2 is null or upper(P.NAME2) like ?)", Operator::AND);
 
         std::cout << sqb.GetSelectStatement() << std::endl;
 

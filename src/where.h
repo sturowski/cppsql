@@ -34,19 +34,47 @@
 #include <string>
 #include "defines.h"
 
+#include <string>
+#include <memory>
+#include <defines.h>
+#include <object.h>
+#include <value.h>
+#include <querybuilder.h>
+
 namespace cppsql {
+class QueryBuilder;
 
 class Where {
 public:
-    Where(const std::string clause, const Operator op);
-
-    const std::string get_clause() const;
-    const std::string get_operator() const;
-
-private:
-    std::string clause_;
+    Object* left_val_;
+    Object* right_val_;
+    Where* extension_;
+    Where* parent_;
+    Comparison comparison_;
     Operator operator_;
+    bool delete_left;
+    bool delete_right;
+
+public:
+    Where(std::string left_val, std::string right_val, Comparison comparison, Operator opt);
+    Where(std::string left_val, QueryBuilder* right_val, Comparison comparison, Operator opt);
+    Where(QueryBuilder* left_val, std::string right_val, Comparison comparison, Operator opt);
+    Where(std::string left_val, std::string right_val, Where* extension, Comparison comparison,
+            Operator opt);
+    Where(std::string left_val, QueryBuilder* right_val, Where* extension,
+            Comparison comparison,
+            Operator opt);
+    Where(QueryBuilder* left_val, std::string right_val, Where* extension,
+            Comparison comparison,
+            Operator opt);
+    ~Where();
+    Where(const Where& obj);
+    const std::string to_string(bool with_operator = true) const;
+
+    Operator get_operator_() const;
+    const bool is_first() const;
 };
 
 }
+
 #endif //CPPSQL_WHERE_H

@@ -1,7 +1,7 @@
 # CMake build script for cppsql
 
 cmake_minimum_required(VERSION 2.8.11)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 
 project(cppsql)
 include_directories(src)
@@ -19,7 +19,8 @@ set(SOURCE_FILES
         src/defines.h
         src/defines.cpp
         src/where.cpp
-        src/where.h)
+        src/where.h
+        src/object.h src/value.cpp src/value.h)
 
 
 # The main.cpp is only for testen and developing the classes

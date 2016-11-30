@@ -39,11 +39,11 @@
 #include "from.h"
 #include "join.h"
 #include "select.h"
-#include "where.h"
-
+#include <where.h>
 namespace cppsql {
+class Where;
 
-class QueryBuilder {
+class QueryBuilder : public Object {
 public:
     QueryBuilder();
     QueryBuilder(const QueryBuilder& builder);
@@ -69,9 +69,20 @@ public:
             const Comparison comparison);
 
     QueryBuilder& where(Where where);
-    QueryBuilder& where(const std::string clause, const Operator op);
+    QueryBuilder& and_where(std::string left_val, std::string right_val, Comparison comparison);
+    QueryBuilder& and_where(std::string left_val, QueryBuilder* right_val, Comparison comparison);
+    QueryBuilder& and_where(QueryBuilder* left_val, std::string right_val, Comparison comparison);
+    QueryBuilder& and_where(std::string left_val, std::string right_val, Where* extension, Comparison comparison);
+    QueryBuilder& and_where(std::string left_val, QueryBuilder* right_val, Where* extension, Comparison comparison);
+    QueryBuilder& and_where(QueryBuilder* left_val, std::string right_val, Where* extension, Comparison comparison);
+    QueryBuilder& or_where(std::string left_val, std::string right_val, Comparison comparison);
+    QueryBuilder& or_where(std::string left_val, QueryBuilder* right_val, Comparison comparison);
+    QueryBuilder& or_where(QueryBuilder* left_val, std::string right_val, Comparison comparison);
+    QueryBuilder& or_where(std::string left_val, std::string right_val, Where* extension, Comparison comparison);
+    QueryBuilder& or_where(std::string left_val, QueryBuilder* right_val, Where* extension, Comparison comparison);
+    QueryBuilder& or_where(QueryBuilder* left_val, std::string right_val, Where* extension, Comparison comparison);
 
-    const std::string GetSelectStatement();
+    const std::string GetSelectStatement() const;
 
     const bool is_empty() const;
     const bool is_distinct() const;
@@ -86,6 +97,8 @@ public:
     const std::string create_select_string() const;
     const std::string create_from_string() const;
     const std::string create_where_string() const;
+    const std::string to_string() const override;
+    const bool empty() const override;
 
 private:
     bool distinct_;

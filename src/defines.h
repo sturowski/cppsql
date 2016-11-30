@@ -41,7 +41,11 @@ enum Comparison {
   GREATER_THAN,
   LOWER_THAN,
   GREATER_EQUALS_THAN,
-  LOWER_EQUALS_THAN
+  LOWER_EQUALS_THAN,
+  IS_NULL,
+  IS_NOT_NULL,
+  IN,
+  LIKE
 };
 ::std::string to_s(Comparison);
 

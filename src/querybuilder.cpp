@@ -109,19 +109,7 @@ void cppsql::QueryBuilder::innerJoin(From left_table, From right_table, const Co
     this->joins_.push_back(join);
 }
 
-cppsql::QueryBuilder& cppsql::QueryBuilder::where(Where where)
-{
-    this->whereClauses_.push_back(where);
-    return *this;
-}
-
-cppsql::QueryBuilder& cppsql::QueryBuilder::where(const std::string clause, const Operator op)
-{
-    this->whereClauses_.push_back(Where(clause, op));
-    return *this;
-}
-
-const std::string cppsql::QueryBuilder::GetSelectStatement()
+const std::string cppsql::QueryBuilder::GetSelectStatement() const
 {
     if (!this->has_selects())
         throw ErrorNames[QUERY_CONTAINS_NO_SELECT];
@@ -182,9 +170,9 @@ const std::string cppsql::QueryBuilder::create_where_string() const
     std::vector<Where>::const_iterator it = this->whereClauses_.begin();
     for (; it!=this->whereClauses_.end(); it++) {
         if (it!=this->whereClauses_.begin())
-            statement += " "+(*it).get_operator()+" ";
+            statement += " "+(*it).to_string(false)+" ";
 
-        statement += (*it).get_clause();
+        statement += (*it).to_string();
     }
     return statement;
 }
@@ -236,7 +224,153 @@ const bool cppsql::QueryBuilder::set_distinct(const bool distinct)
 {
     this->distinct_ = distinct;
 }
+cppsql::QueryBuilder& cppsql::QueryBuilder::where(Where where)
+{
+    this->whereClauses_.push_back(where);
+    return *this;
+}
+cppsql::QueryBuilder& cppsql::QueryBuilder::and_where(std::string left_val, std::string right_val,
+        cppsql::Comparison comparison)
+{
+    Where where(left_val, right_val, comparison, AND);
+    this->whereClauses_.push_back(where);
+    where.delete_right = false;
+    where.delete_left = false;
+    return *this;
+}
 
+cppsql::QueryBuilder& cppsql::QueryBuilder::and_where(std::string left_val, cppsql::QueryBuilder* right_val,
+        cppsql::Comparison comparison)
+{
+    Where where(left_val, right_val, comparison, AND);
+    this->whereClauses_.push_back(where);
+    where.delete_right = false;
+    where.delete_left = false;
+    return *this;
+}
+
+cppsql::QueryBuilder& cppsql::QueryBuilder::and_where(cppsql::QueryBuilder* left_val, std::string right_val,
+        cppsql::Comparison comparison)
+{
+    Where where(left_val, right_val, comparison, AND);
+    this->whereClauses_.push_back(where);
+    where.delete_right = false;
+    where.delete_left = false;
+    return *this;
+}
+
+cppsql::QueryBuilder& cppsql::QueryBuilder::and_where(std::string left_val, std::string right_val,
+        cppsql::Where* extension,
+        cppsql::Comparison comparison)
+{
+    Where where(left_val, right_val, comparison, AND);
+    this->whereClauses_.push_back(where);
+    where.delete_right = false;
+    where.delete_left = false;
+    return *this;
+}
+
+cppsql::QueryBuilder& cppsql::QueryBuilder::and_where(std::string left_val, cppsql::QueryBuilder* right_val,
+        cppsql::Where* extension,
+        cppsql::Comparison comparison)
+{
+    Where where(left_val, right_val, comparison, AND);
+    this->whereClauses_.push_back(where);
+    where.delete_right = false;
+    where.delete_left = false;
+    return *this;
+}
+
+cppsql::QueryBuilder& cppsql::QueryBuilder::and_where(cppsql::QueryBuilder* left_val, std::string right_val,
+        cppsql::Where* extension,
+        cppsql::Comparison comparison)
+{
+    Where where(left_val, right_val, comparison, AND);
+    this->whereClauses_.push_back(where);
+    where.delete_right = false;
+    where.delete_left = false;
+    return *this;
+}
+
+cppsql::QueryBuilder& cppsql::QueryBuilder::or_where(std::string left_val, std::string right_val,
+        cppsql::Comparison comparison)
+{
+    Where where(left_val, right_val, comparison, OR);
+    this->whereClauses_.push_back(where);
+    where.delete_right = false;
+    where.delete_left = false;
+    return *this;
+}
+
+cppsql::QueryBuilder& cppsql::QueryBuilder::or_where(std::string left_val, cppsql::QueryBuilder* right_val,
+        cppsql::Comparison comparison)
+{
+    Where where(left_val, right_val, comparison, OR);
+    this->whereClauses_.push_back(where);
+    where.delete_right = false;
+    where.delete_left = false;
+    return *this;
+}
+
+cppsql::QueryBuilder& cppsql::QueryBuilder::or_where(cppsql::QueryBuilder* left_val, std::string right_val,
+        cppsql::Comparison comparison)
+{
+    Where where(left_val, right_val, comparison, OR);
+    this->whereClauses_.push_back(where);
+    where.delete_right = false;
+    where.delete_left = false;
+    return *this;
+}
+
+cppsql::QueryBuilder& cppsql::QueryBuilder::or_where(std::string left_val, std::string right_val,
+        cppsql::Where* extension,
+        cppsql::Comparison comparison)
+{
+    Where where(left_val, right_val, comparison, OR);
+    this->whereClauses_.push_back(where);
+    where.delete_right = false;
+    where.delete_left = false;
+    return *this;
+}
+
+cppsql::QueryBuilder& cppsql::QueryBuilder::or_where(std::string left_val, cppsql::QueryBuilder* right_val,
+        cppsql::Where* extension,
+        cppsql::Comparison comparison)
+{
+    Where where(left_val, right_val, comparison, OR);
+    this->whereClauses_.push_back(where);
+    where.delete_right = false;
+    where.delete_left = false;
+    return *this;
+}
+
+cppsql::QueryBuilder& cppsql::QueryBuilder::or_where(cppsql::QueryBuilder* left_val, std::string right_val,
+        cppsql::Where* extension,
+        cppsql::Comparison comparison)
+{
+    Where where(left_val, right_val, comparison, OR);
+    this->whereClauses_.push_back(where);
+    where.delete_right = false;
+    where.delete_left = false;
+    return *this;
+}
+const std::string cppsql::QueryBuilder::to_string() const
+{
+    return GetSelectStatement();
+}
+const bool cppsql::QueryBuilder::empty() const
+{
+    bool empty = true;
+    if (!this->has_selects())
+        empty = false;
+    if (!this->has_fromClauses())
+        empty = false;
+    if (!this->has_joins())
+        empty = false;
+    if (!this->has_whereClauses())
+        empty = false;
+    return empty;
+}
 
 
 
