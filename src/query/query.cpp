@@ -69,9 +69,10 @@ cppsql::Query& cppsql::Query::select(const std::string column_name)
     return *this;
 }
 
-cppsql::Query& cppsql::Query::select(const std::string column_name, const std::string table_name)
+cppsql::Query& cppsql::Query::select(const std::string column_name, const std::string table_name,
+        const std::string alias)
 {
-    this->selects_.push_back(Select(column_name, table_name));
+    this->selects_.push_back(Select(column_name, table_name, alias));
     return *this;
 }
 

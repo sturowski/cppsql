@@ -37,10 +37,11 @@ cppsql::Select::Select(const std::string column_name)
 {
 }
 
-cppsql::Select::Select(const std::string column_name, const std::string table_name)
+cppsql::Select::Select(const std::string column_name, const std::string table_name, const std::string alias)
         :
         column_name_(column_name),
-        table_name_(table_name)
+        table_name_(table_name),
+        alias_(alias)
 {
 }
 
@@ -54,11 +55,18 @@ const std::string cppsql::Select::create_string() const
     std::string statement;
     if (!this->table_name_.empty())
         statement = this->table_name_+".";
-    return statement+this->column_name_;
+    statement += this->column_name_;
+    if (!this->alias_.empty())
+        statement += " AS "+this->alias_;
+    return statement;
 }
 
 const std::string cppsql::Select::to_string() const
 {
     return this->create_string();
+}
+const std::string cppsql::Select::get_alias() const
+{
+    return this->alias_;
 }
 
