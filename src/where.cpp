@@ -34,6 +34,7 @@
 cppsql::Where::Where(std::string left_val, std::string right_val, Comparison comparison, Operator opt)
         :left_val_(new Value(left_val)),
          right_val_(new Value(right_val)),
+         extension_(nullptr),
          comparison_(comparison),
          parent_(nullptr),
          operator_(opt),
@@ -46,6 +47,7 @@ cppsql::Where::Where(std::string left_val, QueryBuilder* right_val, Comparison c
         cppsql::Operator opt)
         :left_val_(new Value(left_val)),
          right_val_(right_val),
+         extension_(nullptr),
          comparison_(comparison),
          parent_(nullptr),
          operator_(opt),
@@ -59,6 +61,7 @@ cppsql::Where::Where(QueryBuilder* left_val, std::string right_val, Comparison c
         cppsql::Operator opt)
         :left_val_(left_val),
          right_val_(new Value(right_val)),
+         extension_(nullptr),
          comparison_(comparison),
          parent_(nullptr),
          operator_(opt),
@@ -181,6 +184,6 @@ cppsql::Where::Where(const cppsql::Where& obj)
     this->operator_ = obj.operator_;
     this->delete_left = obj.delete_left;
     this->delete_right = obj.delete_right;
-
 }
+
 

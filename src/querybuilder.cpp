@@ -167,12 +167,12 @@ const std::string cppsql::QueryBuilder::create_where_string() const
 {
     std::string statement = "WHERE ";
 
-    std::vector<Where>::const_iterator it = this->whereClauses_.begin();
+    std::vector<Where*>::const_iterator it = this->whereClauses_.begin();
     for (; it!=this->whereClauses_.end(); it++) {
-        if (it!=this->whereClauses_.begin())
-            statement += " "+(*it).to_string(false)+" ";
-
-        statement += (*it).to_string();
+        if (it==this->whereClauses_.begin())
+            statement += (*it)->to_string(false);
+        else
+            statement += " "+(*it)->to_string();
     }
     return statement;
 }
@@ -226,36 +226,29 @@ const bool cppsql::QueryBuilder::set_distinct(const bool distinct)
 }
 cppsql::QueryBuilder& cppsql::QueryBuilder::where(Where where)
 {
-    this->whereClauses_.push_back(where);
+//    this->whereClauses_.push_back(where);
     return *this;
 }
 cppsql::QueryBuilder& cppsql::QueryBuilder::and_where(std::string left_val, std::string right_val,
         cppsql::Comparison comparison)
 {
-    Where where(left_val, right_val, comparison, AND);
+    Where* where = new Where(left_val, right_val, comparison, AND);
     this->whereClauses_.push_back(where);
-    where.delete_right = false;
-    where.delete_left = false;
     return *this;
 }
 
 cppsql::QueryBuilder& cppsql::QueryBuilder::and_where(std::string left_val, cppsql::QueryBuilder* right_val,
         cppsql::Comparison comparison)
 {
-    Where where(left_val, right_val, comparison, AND);
-    this->whereClauses_.push_back(where);
-    where.delete_right = false;
-    where.delete_left = false;
+
+    this->whereClauses_.push_back(new Where(left_val, right_val, comparison, AND));
     return *this;
 }
 
 cppsql::QueryBuilder& cppsql::QueryBuilder::and_where(cppsql::QueryBuilder* left_val, std::string right_val,
         cppsql::Comparison comparison)
 {
-    Where where(left_val, right_val, comparison, AND);
-    this->whereClauses_.push_back(where);
-    where.delete_right = false;
-    where.delete_left = false;
+    this->whereClauses_.push_back(new Where(left_val, right_val, comparison, AND));
     return *this;
 }
 
@@ -263,10 +256,8 @@ cppsql::QueryBuilder& cppsql::QueryBuilder::and_where(std::string left_val, std:
         cppsql::Where* extension,
         cppsql::Comparison comparison)
 {
-    Where where(left_val, right_val, comparison, AND);
-    this->whereClauses_.push_back(where);
-    where.delete_right = false;
-    where.delete_left = false;
+
+    this->whereClauses_.push_back(new Where(left_val, right_val, extension, comparison, AND));
     return *this;
 }
 
@@ -274,10 +265,8 @@ cppsql::QueryBuilder& cppsql::QueryBuilder::and_where(std::string left_val, cpps
         cppsql::Where* extension,
         cppsql::Comparison comparison)
 {
-    Where where(left_val, right_val, comparison, AND);
-    this->whereClauses_.push_back(where);
-    where.delete_right = false;
-    where.delete_left = false;
+
+    this->whereClauses_.push_back(new Where(left_val, right_val, extension, comparison, AND));
     return *this;
 }
 
@@ -285,40 +274,30 @@ cppsql::QueryBuilder& cppsql::QueryBuilder::and_where(cppsql::QueryBuilder* left
         cppsql::Where* extension,
         cppsql::Comparison comparison)
 {
-    Where where(left_val, right_val, comparison, AND);
-    this->whereClauses_.push_back(where);
-    where.delete_right = false;
-    where.delete_left = false;
+
+    this->whereClauses_.push_back(new Where(left_val, right_val, extension, comparison, AND));
     return *this;
 }
 
 cppsql::QueryBuilder& cppsql::QueryBuilder::or_where(std::string left_val, std::string right_val,
         cppsql::Comparison comparison)
 {
-    Where where(left_val, right_val, comparison, OR);
-    this->whereClauses_.push_back(where);
-    where.delete_right = false;
-    where.delete_left = false;
+    this->whereClauses_.push_back(new Where(left_val, right_val, comparison, OR));
     return *this;
 }
 
 cppsql::QueryBuilder& cppsql::QueryBuilder::or_where(std::string left_val, cppsql::QueryBuilder* right_val,
         cppsql::Comparison comparison)
 {
-    Where where(left_val, right_val, comparison, OR);
-    this->whereClauses_.push_back(where);
-    where.delete_right = false;
-    where.delete_left = false;
+    this->whereClauses_.push_back(new Where(left_val, right_val, comparison, OR));
     return *this;
 }
 
 cppsql::QueryBuilder& cppsql::QueryBuilder::or_where(cppsql::QueryBuilder* left_val, std::string right_val,
         cppsql::Comparison comparison)
 {
-    Where where(left_val, right_val, comparison, OR);
-    this->whereClauses_.push_back(where);
-    where.delete_right = false;
-    where.delete_left = false;
+
+    this->whereClauses_.push_back(new Where(left_val, right_val, comparison, OR));
     return *this;
 }
 
@@ -326,10 +305,8 @@ cppsql::QueryBuilder& cppsql::QueryBuilder::or_where(std::string left_val, std::
         cppsql::Where* extension,
         cppsql::Comparison comparison)
 {
-    Where where(left_val, right_val, comparison, OR);
-    this->whereClauses_.push_back(where);
-    where.delete_right = false;
-    where.delete_left = false;
+
+    this->whereClauses_.push_back(new Where(left_val, right_val, extension, comparison, OR));
     return *this;
 }
 
@@ -337,10 +314,8 @@ cppsql::QueryBuilder& cppsql::QueryBuilder::or_where(std::string left_val, cppsq
         cppsql::Where* extension,
         cppsql::Comparison comparison)
 {
-    Where where(left_val, right_val, comparison, OR);
-    this->whereClauses_.push_back(where);
-    where.delete_right = false;
-    where.delete_left = false;
+
+    this->whereClauses_.push_back(new Where(left_val, right_val, extension, comparison, OR));
     return *this;
 }
 
@@ -348,10 +323,7 @@ cppsql::QueryBuilder& cppsql::QueryBuilder::or_where(cppsql::QueryBuilder* left_
         cppsql::Where* extension,
         cppsql::Comparison comparison)
 {
-    Where where(left_val, right_val, comparison, OR);
-    this->whereClauses_.push_back(where);
-    where.delete_right = false;
-    where.delete_left = false;
+    this->whereClauses_.push_back(new Where(left_val, right_val, extension, comparison, OR));
     return *this;
 }
 const std::string cppsql::QueryBuilder::to_string() const
@@ -370,6 +342,13 @@ const bool cppsql::QueryBuilder::empty() const
     if (!this->has_whereClauses())
         empty = false;
     return empty;
+}
+cppsql::QueryBuilder::~QueryBuilder()
+{
+    std::vector<Where*>::iterator iter = this->whereClauses_.begin();
+    for (; iter!=this->whereClauses_.end();) {
+        iter = whereClauses_.erase(iter);
+    }
 }
 
 

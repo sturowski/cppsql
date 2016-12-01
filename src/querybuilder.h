@@ -48,7 +48,7 @@ public:
     QueryBuilder();
     QueryBuilder(const QueryBuilder& builder);
     QueryBuilder& operator=(QueryBuilder& builder);
-    virtual ~QueryBuilder() { }
+    virtual ~QueryBuilder();
 
     QueryBuilder& select(Select select);
     QueryBuilder& select(const std::string column_name);
@@ -105,7 +105,7 @@ private:
     std::vector<Select> selects_;
     std::vector<From> fromClauses_;
     std::vector<Join> joins_;
-    std::vector<Where> whereClauses_;
+    std::vector<Where*> whereClauses_;
 };
 
 }
