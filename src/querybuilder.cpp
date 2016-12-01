@@ -347,6 +347,7 @@ cppsql::QueryBuilder::~QueryBuilder()
 {
     std::vector<Where*>::iterator iter = this->whereClauses_.begin();
     for (; iter!=this->whereClauses_.end();) {
+        delete *iter;
         iter = whereClauses_.erase(iter);
     }
 }

@@ -169,10 +169,10 @@ cppsql::Operator cppsql::Where::get_operator_() const
 }
 cppsql::Where::~Where()
 {
-//    if(delete_left && left_val_)
-//        delete left_val_;
-//    if(delete_right && right_val_)
-//        delete right_val_;
+    if (delete_left && left_val_)
+        delete left_val_;
+    if (delete_right && right_val_)
+        delete right_val_;
 }
 cppsql::Where::Where(const cppsql::Where& obj)
 {
