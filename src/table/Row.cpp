@@ -29,24 +29,43 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "table.h"
-cppsql::Row& cppsql::Table::operator[](std::size_t idx)
+#include "Row.h"
+std::string& cppsql::Row::operator[](std::size_t idx)
 {
-    return rows_[idx];
+    return columns_[idx];
 }
-const cppsql::Row& cppsql::Table::operator[](std::size_t idx) const
+const std::string& cppsql::Row::operator[](std::size_t idx) const
 {
-    return rows_[idx];
+    return columns_[idx];
 }
-void cppsql::Table::add_row(cppsql::Row row)
+void cppsql::Row::add_column(std::string column)
 {
-    rows_.push_back(row);
+    columns_.push_back(column);
 }
-unsigned long cppsql::Table::size()
+unsigned long cppsql::Row::size()
 {
-    return rows_.size();
+    return columns_.size();
 }
-const std::vector<cppsql::Row>& cppsql::Table::rows()
+std::string cppsql::Row::to_string()
 {
-    return rows_;
+    return create_string();
+}
+const std::string cppsql::Row::to_string() const
+{
+    return create_string();
+}
+std::string cppsql::Row::create_string() const
+{
+    std::string row = "[";
+    bool first = true;
+    for (const auto& column : this->columns_) {
+        if (!first)
+            row += ", ";
+        else
+            first = false;
+
+        row += column;
+    }
+    row += "]";
+    return row;
 }

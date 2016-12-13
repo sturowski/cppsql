@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
 
-    Created on 21.11.16
+    Created on 25.10.16
 
     This file is part of cppsql, a C++ collection.
 
@@ -29,19 +29,45 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "value.h"
+#ifndef CPPSQL_WHERE_H
+#define CPPSQL_WHERE_H
 
+#include <string>
+#include <memory>
+#include <Defines.h>
+#include <Object.h>
+#include <Value.h>
+#include <Query.h>
 
-cppsql::Value::Value(std::string val)
-        :value_(val) { }
+namespace cppsql {
+class Query;
 
+class Where {
+private:
+    std::shared_ptr<Object> left_val_;
+    std::shared_ptr<Object> right_val_;
+    std::shared_ptr<Where> extension_;
+    std::shared_ptr<Where> parent_;
+    Comparison comparison_;
+    Operator operator_;
 
-const std::string cppsql::Value::to_string() const
-{
-    return value_;
+public:
+    Where(std::string left_val, std::string right_val, Comparison comparison, Operator opt);
+    Where(std::string left_val, Query& right_val, Comparison comparison, Operator opt);
+    Where(Query& left_val, std::string right_val, Comparison comparison, Operator opt);
+    Where(std::string left_val, std::string right_val, Where& extension, Comparison comparison,
+            Operator opt);
+    Where(std::string left_val, Query&  right_val, Where&  extension,
+            Comparison comparison,
+            Operator opt);
+    Where(Query&  left_val, std::string right_val, Where&  extension,
+            Comparison comparison,
+            Operator opt);
+    const std::string to_string(bool with_operator=true) const;
+
+    Operator get_operator_() const;
+    const bool is_first() const;
+};
+
 }
-
-const bool cppsql::Value::empty() const
-{
-    return value_.empty();
-}
+#endif //CPPSQL_WHERE_H

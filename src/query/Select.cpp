@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
     
-    Created on 13.11.16
+    Created on 20.10.16
 
-    This file is part of tools, a C++ collection.
+    This file is part of cppsql, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -29,38 +29,44 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPPSQL_CONNECTION_H
-#define CPPSQL_CONNECTION_H
-#include <string>
-#include "../table/row.h"
-#include <vector>
-#include "../table/table.h"
+#include "Select.h"
 
-namespace cppsql {
-
-class Connection {
-public:
-    Connection() throw() { };
-    virtual ~Connection() { };
-
-    virtual void connect(const std::string host, const std::string user, const std::string password,
-            const std::string database,
-            const int port) throw();
-
-    virtual void close()=0;
-    virtual Table query(const std::string query) throw() =0;
-    virtual void start_transaction() throw() =0;
-    virtual void commit() throw() =0;
-    virtual void rollback() throw() =0;
-
-protected:
-    std::string host_;
-    std::string user_;
-    std::string password_;
-    std::string database_;
-    int port;
-};
-
+cppsql::Select::Select(const std::string column_name)
+        :
+        column_name_(column_name)
+{
 }
 
-#endif //CPPSQL_CONNECTION_H
+cppsql::Select::Select(const std::string column_name, const std::string table_name, const std::string alias)
+        :
+        column_name_(column_name),
+        table_name_(table_name),
+        alias_(alias)
+{
+}
+
+const std::string cppsql::Select::to_string()
+{
+    return this->create_string();
+}
+
+const std::string cppsql::Select::create_string() const
+{
+    std::string statement;
+    if (!this->table_name_.empty())
+        statement = this->table_name_+".";
+    statement += this->column_name_;
+    if (!this->alias_.empty())
+        statement += " AS "+this->alias_;
+    return statement;
+}
+
+const std::string cppsql::Select::to_string() const
+{
+    return this->create_string();
+}
+const std::string cppsql::Select::get_alias() const
+{
+    return this->alias_;
+}
+

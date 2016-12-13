@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
-    
-    Created on 19.11.16
 
-    This file is part of tools, a C++ collection.
+    Created on 25.10.16
+
+    This file is part of cppsql, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -28,44 +28,63 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "From.h"
 
-#include "row.h"
-std::string& cppsql::Row::operator[](std::size_t idx)
+cppsql::From::From(const std::string table_name)
+        :
+        table_name_(table_name)
 {
-    return columns_[idx];
 }
-const std::string& cppsql::Row::operator[](std::size_t idx) const
+
+cppsql::From::From(const std::string table_name, const std::string alias)
+        :
+        table_name_(table_name),
+        alias_(alias)
 {
-    return columns_[idx];
 }
-void cppsql::Row::add_column(std::string column)
+
+cppsql::From::From(const std::string table_name, const std::string alias, const std::string join_column)
+        :
+        table_name_(table_name),
+        alias_(alias),
+        join_column_(join_column)
 {
-    columns_.push_back(column);
 }
-unsigned long cppsql::Row::size()
-{
-    return columns_.size();
-}
-std::string cppsql::Row::to_string()
+
+const std::string cppsql::From::to_string()
 {
     return create_string();
 }
-const std::string cppsql::Row::to_string() const
+
+const std::string cppsql::From::to_string() const
 {
     return create_string();
 }
-std::string cppsql::Row::create_string() const
-{
-    std::string row = "[";
-    bool first = true;
-    for (const auto& column : this->columns_) {
-        if (!first)
-            row += ", ";
-        else
-            first = false;
 
-        row += column;
-    }
-    row += "]";
-    return row;
+const std::string cppsql::From::create_string() const
+{
+    std::string statement = this->table_name_;
+    if (!this->alias_.empty())
+        statement += " "+this->alias_;
+    return statement;
 }
+
+const std::string cppsql::From::get_table_name() const
+{
+    return this->table_name_;
+}
+
+const std::string cppsql::From::get_alias() const
+{
+    return this->alias_;
+}
+
+const std::string cppsql::From::get_join_column() const
+{
+    std::string statement;
+    if (!this->alias_.empty())
+        statement = this->alias_+".";
+
+    return statement+this->join_column_;
+}
+

@@ -32,8 +32,8 @@
 #define CPPSQL_JOIN_H
 
 #include <string>
-#include "../defines/defines.h"
-#include "from.h"
+#include "Defines.h"
+#include "From.h"
 
 namespace cppsql {
 

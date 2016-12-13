@@ -32,40 +32,59 @@
 #include <map>
 #include <iostream>
 #include <memory>
-#include <defines.h>
-#include <where.h>
+#include <Defines.h>
+#include <Where.h>
 
 using namespace cppsql;
 
+template<typename T, typename = std::enable_if_t<std::is_class<std::string>::value>>
+void adder(T v)
+{
+    std::cout << v << std::endl;
+}
+
+template<typename T, typename... Args>
+void adder(T first, Args... args)
+{
+    std::cout << first << std::endl;
+    adder(args...);
+}
+
+
 int main(int argc, char* argv[])
 {
+
     Query statement;
-    statement.select("ORDER_ID", "O").select("USER_ID", "O")
-            .from("ORDER", "O")
-            .and_where("ORDER_ID", "12345", Comparison::EQUALS);
-    std::cout << statement.get_select_statement() << std::endl;
+    statement.select("O.ORDER_ID", "O.USER_ID");
 
 
-
-
-
-    //AND (DATE_LAST IS NULL OR DATE_LAST = 0 OR DATE_LAST >= 20161107)
-    Where test("DATE_LAST", "20161107", Comparison::GREATER_EQUALS_THAN, Operator::OR);
-    Where test1("DATE_LAST", "0", test, Comparison::EQUALS, Operator::OR);
-    Where test2("DATE_LAST", "", test, Comparison::IS_NULL, Operator::AND);
-    std::cout << test2.to_string() << std::endl;
-
-    //AND (ORDER_ID IN (SELECT ORDER_ID FROM SEPA_STANDIN_ODERS))
-    Query query;
-    query.select("ORDER_ID").from("SEPA_STANDIN_ODERS");
-    Where test3("ORDER_ID", query, Comparison::IN, Operator::AND);
-    std::cout << test3.to_string() << std::endl;
-
-    //AND (DATE_END IS NULL AND (DATE_BEGIN IS NOT NULL OR TYPE = "NO_END"))
-    Where test4("TYPE", "'NO_END'", Comparison::EQUALS, Operator::OR);
-    Where test5("DATE_BEGIN", "", test4, Comparison::IS_NOT_NULL, Operator::AND);
-    Where test6("DATE_END", "", test5, Comparison::IS_NULL, Operator::AND);
-    std::cout << test6.to_string() << std::endl;
+//    Query statement;
+//    statement.select("ORDER_ID", "O").select("USER_ID", "O")
+//            .from("ORDER", "O")
+//            .and_where("ORDER_ID", "12345", Comparison::EQUALS);
+//    std::cout << statement.get_select_statement() << std::endl;
+//
+//
+//
+//
+//
+//    //AND (DATE_LAST IS NULL OR DATE_LAST = 0 OR DATE_LAST >= 20161107)
+//    Where test("DATE_LAST", "20161107", Comparison::GREATER_EQUALS_THAN, Operator::OR);
+//    Where test1("DATE_LAST", "0", test, Comparison::EQUALS, Operator::OR);
+//    Where test2("DATE_LAST", "", test, Comparison::IS_NULL, Operator::AND);
+//    std::cout << test2.to_string() << std::endl;
+//
+//    //AND (ORDER_ID IN (SELECT ORDER_ID FROM SEPA_STANDIN_ODERS))
+//    Query query;
+//    query.select("ORDER_ID").from("SEPA_STANDIN_ODERS");
+//    Where test3("ORDER_ID", query, Comparison::IN, Operator::AND);
+//    std::cout << test3.to_string() << std::endl;
+//
+//    //AND (DATE_END IS NULL AND (DATE_BEGIN IS NOT NULL OR TYPE = "NO_END"))
+//    Where test4("TYPE", "'NO_END'", Comparison::EQUALS, Operator::OR);
+//    Where test5("DATE_BEGIN", "", test4, Comparison::IS_NOT_NULL, Operator::AND);
+//    Where test6("DATE_END", "", test5, Comparison::IS_NULL, Operator::AND);
+//    std::cout << test6.to_string() << std::endl;
 
 
 }

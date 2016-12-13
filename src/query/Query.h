@@ -36,11 +36,11 @@
 #include <string>
 #include <vector>
 
-#include "from.h"
-#include "join.h"
-#include "select.h"
-#include "where.h"
-#include "object.h"
+#include "From.h"
+#include "Join.h"
+#include "Select.h"
+#include "Where.h"
+#include "Object.h"
 
 namespace cppsql {
 class Where;
@@ -52,9 +52,21 @@ public:
     Query& operator=(Query& builder);
     virtual ~Query() { }
 
-    Query& select(Select select);
-    Query& select(const std::string column_name);
-    Query& select(const std::string column_name, const std::string table_name, const std::string alias = "");
+    template<typename Type, typename = std::enable_if_t<std::is_class<std::string>::value>>
+    void select(Type statement)
+    {
+        std::cout << statement << "\n";
+    }
+    template<typename Type, typename ... Types>
+    void select(Type statement, Types ... rest)
+    {
+        std::cout << statement << "\n";
+        select(rest...);
+    }
+
+//    Query& select(Select select);
+//    Query& select(const std::string column_name);
+//    Query& select(const std::string column_name, const std::string table_name, const std::string alias = "");
 
     Query& from(From from);
     Query& from(const std::string table_name);

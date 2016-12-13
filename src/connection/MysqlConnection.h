@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
     
-    Created on 20.10.16
+    Created on 13.11.16
 
-    This file is part of cppsql, a C++ collection.
+    This file is part of tools, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -29,44 +29,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "select.h"
+#ifndef CPPSQL_MYSQLCONNECTION_H
+#define CPPSQL_MYSQLCONNECTION_H
+#include <my_global.h>
+#include <mysql.h>
+#undef min
+#undef max
+#undef test
+#include <Connection.h>
 
-cppsql::Select::Select(const std::string column_name)
-        :
-        column_name_(column_name)
-{
-}
+namespace cppsql {
 
-cppsql::Select::Select(const std::string column_name, const std::string table_name, const std::string alias)
-        :
-        column_name_(column_name),
-        table_name_(table_name),
-        alias_(alias)
-{
-}
+class MySqlConnection : public Connection {
+public:
+    MySqlConnection() throw();
+    virtual ~MySqlConnection();
+    virtual void connect(const std::string host, const std::string user, const std::string password,
+            const std::string database, const int port) throw() override;
+    virtual void close() override;
+    virtual Table query(const std::string query) throw() override;
+    virtual void start_transaction() throw() override;
+    virtual void commit() throw() override;
+    virtual void rollback() throw() override;
+protected:
+    MYSQL* con_;
 
-const std::string cppsql::Select::to_string()
-{
-    return this->create_string();
+};
 }
-
-const std::string cppsql::Select::create_string() const
-{
-    std::string statement;
-    if (!this->table_name_.empty())
-        statement = this->table_name_+".";
-    statement += this->column_name_;
-    if (!this->alias_.empty())
-        statement += " AS "+this->alias_;
-    return statement;
-}
-
-const std::string cppsql::Select::to_string() const
-{
-    return this->create_string();
-}
-const std::string cppsql::Select::get_alias() const
-{
-    return this->alias_;
-}
-
+#endif //CPPSQL_MYSQLCONNECTION_H

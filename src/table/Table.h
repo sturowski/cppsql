@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
+    
+    Created on 19.11.16
 
-    Created on 21.11.16
-
-    This file is part of cppsql, a C++ collection.
+    This file is part of tools, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -29,22 +29,23 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPPSQL_VALUE_H
-#define CPPSQL_VALUE_H
+#ifndef CPPSQL_TABLE_H
+#define CPPSQL_TABLE_H
 
-#include "object.h"
-
+#include "Row.h"
 namespace cppsql {
-class Value : public Object {
+class Table {
 public:
-    Value(std::string val);
-    virtual const std::string to_string() const override;
-
-    virtual const bool empty() const override;
+    Row& operator[](std::size_t idx);
+    const Row& operator[](std::size_t idx) const;
+    void add_row(Row row);
+    unsigned long size();
+    const std::vector<Row>& rows();
 
 private:
-    std::string value_;
+    std::vector<Row> rows_;
 };
+
 }
 
-#endif //CPPSQL_VALUE_H
+#endif //CPPSQL_TABLE_H

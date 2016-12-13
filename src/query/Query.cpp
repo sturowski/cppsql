@@ -29,8 +29,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../defines/errors.h"
-#include "query.h"
+#include "Errors.h"
+#include "Query.h"
 
 cppsql::Query::Query()
         :distinct_(false)
@@ -56,25 +56,25 @@ cppsql::Query& cppsql::Query::operator=(Query& builder)
     this->whereClauses_ = builder.whereClauses_;
     return *this;
 }
-
-cppsql::Query& cppsql::Query::select(Select select)
-{
-    this->selects_.push_back(select);
-    return *this;
-}
-
-cppsql::Query& cppsql::Query::select(const std::string column_name)
-{
-    this->selects_.push_back(Select(column_name));
-    return *this;
-}
-
-cppsql::Query& cppsql::Query::select(const std::string column_name, const std::string table_name,
-        const std::string alias)
-{
-    this->selects_.push_back(Select(column_name, table_name, alias));
-    return *this;
-}
+//
+//cppsql::Query& cppsql::Query::select(Select select)
+//{
+//    this->selects_.push_back(select);
+//    return *this;
+//}
+//
+//cppsql::Query& cppsql::Query::select(const std::string column_name)
+//{
+//    this->selects_.push_back(Select(column_name));
+//    return *this;
+//}
+//
+//cppsql::Query& cppsql::Query::select(const std::string column_name, const std::string table_name,
+//        const std::string alias)
+//{
+//    this->selects_.push_back(Select(column_name, table_name, alias));
+//    return *this;
+//}
 
 cppsql::Query& cppsql::Query::from(From from)
 {
@@ -334,6 +334,8 @@ cppsql::Query& cppsql::Query::or_where(cppsql::Query& left_val, std::string righ
     this->whereClauses_.push_back(where);
     return *this;
 }
+
+
 
 
 

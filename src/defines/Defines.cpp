@@ -28,63 +28,56 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "from.h"
 
-cppsql::From::From(const std::string table_name)
-        :
-        table_name_(table_name)
+#include "Defines.h"
+
+static const char* ComparisonNames[] = {
+        "=",
+        "<>",
+        ">",
+        "<",
+        ">=",
+        "<=",
+        "IS NULL",
+        "IS NOT NULL",
+        "IN"
+};
+
+::std::string cppsql::to_s(Comparison cmp)
 {
+    return ComparisonNames[static_cast<int>(cmp)];
 }
 
-cppsql::From::From(const std::string table_name, const std::string alias)
-        :
-        table_name_(table_name),
-        alias_(alias)
+static const char* JoinTypeNames[] = {
+        "LEFT JOIN",
+        "RIGHT JOIN",
+        "INNER JOIN"
+};
+
+::std::string cppsql::to_s(JoinType type)
 {
+    return JoinTypeNames[static_cast<int>(type)];
 }
 
-cppsql::From::From(const std::string table_name, const std::string alias, const std::string join_column)
-        :
-        table_name_(table_name),
-        alias_(alias),
-        join_column_(join_column)
+static const char* OperatorsNames[] = {
+        "AND",
+        "OR"
+};
+
+::std::string cppsql::to_s(Operator op)
 {
+    return OperatorsNames[static_cast<int>(op)];
 }
 
-const std::string cppsql::From::to_string()
-{
-    return create_string();
-}
+// Checks
+// statically check that the size of ComparisonNames fits the number of Comparison
+static_assert(sizeof(ComparisonNames)/sizeof(char*)==static_cast<int>(cppsql::Comparison::IN)+1,
+        "Comparison sizes dont match");
 
-const std::string cppsql::From::to_string() const
-{
-    return create_string();
-}
+// statically check that the size of JoinTypeNames fits the number of JoinType
+static_assert(sizeof(JoinTypeNames)/sizeof(char*)==static_cast<int>(cppsql::JoinType::INNER)+1,
+        "JoinType sizes dont match");
 
-const std::string cppsql::From::create_string() const
-{
-    std::string statement = this->table_name_;
-    if (!this->alias_.empty())
-        statement += " "+this->alias_;
-    return statement;
-}
-
-const std::string cppsql::From::get_table_name() const
-{
-    return this->table_name_;
-}
-
-const std::string cppsql::From::get_alias() const
-{
-    return this->alias_;
-}
-
-const std::string cppsql::From::get_join_column() const
-{
-    std::string statement;
-    if (!this->alias_.empty())
-        statement = this->alias_+".";
-
-    return statement+this->join_column_;
-}
-
+// statically check that the size of OperatorsNames fits the number of Operator
+static_assert(sizeof(OperatorsNames)/sizeof(char*)==static_cast<int>(cppsql::Operator::OR)+1,
+        "Operator sizes dont match");

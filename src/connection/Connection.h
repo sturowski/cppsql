@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
+    
+    Created on 13.11.16
 
-    Created on 25.10.16
-
-    This file is part of cppsql, a C++ collection.
+    This file is part of tools, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -29,29 +29,38 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "join.h"
+#ifndef CPPSQL_CONNECTION_H
+#define CPPSQL_CONNECTION_H
+#include <string>
+#include "Row.h"
+#include <vector>
+#include "Table.h"
 
-cppsql::Join::Join(From left_table,
-        From right_table,
-        const JoinType type,
-        const Comparison comparison)
-        :
-        left_table_(left_table),
-        right_table_(right_table),
-        type_(type),
-        comparison_(comparison) { }
+namespace cppsql {
 
-const std::string cppsql::Join::GetJoinStatement() const
-{
-    std::string statement = "(";
-    statement += left_table_.get_table_name()+" "+left_table_.get_alias()
-            +" "; // Adding the first element of the join
-    statement += to_s(type_)+" ";
-    statement += right_table_.get_table_name()+" "+right_table_.get_alias()
-            +" "; // Adding the second element of the join
-    statement += "on "+left_table_.get_join_column()+" "
-            +to_s(comparison_)+" "+right_table_.get_join_column();
-    statement += ")";
+class Connection {
+public:
+    Connection() throw() { };
+    virtual ~Connection() { };
 
-    return statement;
+    virtual void connect(const std::string host, const std::string user, const std::string password,
+            const std::string database,
+            const int port) throw();
+
+    virtual void close()=0;
+    virtual Table query(const std::string query) throw() =0;
+    virtual void start_transaction() throw() =0;
+    virtual void commit() throw() =0;
+    virtual void rollback() throw() =0;
+
+protected:
+    std::string host_;
+    std::string user_;
+    std::string password_;
+    std::string database_;
+    int port;
+};
+
 }
+
+#endif //CPPSQL_CONNECTION_H

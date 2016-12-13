@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
     
-    Created on 19.11.16
+    Created on 13.11.16
 
     This file is part of tools, a C++ collection.
 
@@ -29,23 +29,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPPSQL_TABLE_H
-#define CPPSQL_TABLE_H
-
-#include "row.h"
-namespace cppsql {
-class Table {
-public:
-    Row& operator[](std::size_t idx);
-    const Row& operator[](std::size_t idx) const;
-    void add_row(Row row);
-    unsigned long size();
-    const std::vector<Row>& rows();
-
-private:
-    std::vector<Row> rows_;
-};
-
+#include "Connection.h"
+void cppsql::Connection::connect(const std::string host, const std::string user, const std::string password,
+        const std::string database, const int port) throw()
+{
+    this->host_ = host;
+    this->user_ = user;
+    this->password_ = password;
+    this->database_ = database;
+    this->port = port;
 }
-
-#endif //CPPSQL_TABLE_H
