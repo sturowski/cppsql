@@ -10,6 +10,7 @@ include_directories(src/connection)
 include_directories(src/defines)
 include_directories(src/table)
 include_directories(src/tools)
+include_directories(src/parser)
 
 set(SOURCE_FILES
         src/query/Query.h
@@ -36,7 +37,10 @@ set(SOURCE_FILES
         src/table/Table.cpp
         src/query/Object.h
         src/query/Value.cpp
-        src/query/Value.h src/parser/SelectParser.cpp src/parser/SelectParser.h)
+        src/query/Value.h
+        src/parser/SelectParser.cpp
+        src/parser/SelectParser.h
+        src/parser/ParseHelper.h)
 
 add_executable(cppsql main.cpp ${SOURCE_FILES})
 target_link_libraries(cppsql mysqlclient)

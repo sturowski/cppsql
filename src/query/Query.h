@@ -35,6 +35,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <SelectParser.h>
 
 #include "From.h"
 #include "Join.h"
@@ -55,18 +56,14 @@ public:
     template<typename Type, typename = std::enable_if_t<std::is_class<std::string>::value>>
     void select(Type statement)
     {
-        std::cout << statement << "\n";
+        selects_.push_back(SelectParser::parse(statement));
     }
     template<typename Type, typename ... Types>
     void select(Type statement, Types ... rest)
     {
-        std::cout << statement << "\n";
+        selects_.push_back(SelectParser::parse(statement));
         select(rest...);
     }
-
-//    Query& select(Select select);
-//    Query& select(const std::string column_name);
-//    Query& select(const std::string column_name, const std::string table_name, const std::string alias = "");
 
     Query& from(From from);
     Query& from(const std::string table_name);
