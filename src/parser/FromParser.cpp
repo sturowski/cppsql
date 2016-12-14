@@ -29,23 +29,22 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPPSQL_PARSEHELPER_H
-#define CPPSQL_PARSEHELPER_H
-#include <string>
-#include <sstream>
 #include <vector>
-namespace cppsql {
-static std::vector<std::string> split(const std::string& s, char delim)
+#include <Errors.h>
+#include "FromParser.h"
+#include "ParseHelper.h"
+cppsql::From cppsql::FromParser::parse(const std::string statement) throw()
 {
-    std::stringstream ss(s);
-    std::string item;
-    std::vector<std::string> elems;
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-        // elems.push_back(std::move(item)); // if C++11 (based on comment from @mchiasson)
-    }
-    return elems;
-}
-}
+    std::vector<std::string> entries = std::move(split(statement, ' '));
+    if (entries.size()==0)
+        throw SqlException(Errors::PARSER_EMPTY_STRING);
+    if (entries.size()>2)
+        throw SqlException(Errors::PARSER_NO_MATCHING_NUMBER_OF_ARGUMENTS);
 
-#endif //CPPSQL_PARSEHELPER_H
+    std::string table = entries[0];
+    std::string alias;
+    if (entries.size()==2)
+        alias = entries[1];
+
+    return From(table, alias);
+}

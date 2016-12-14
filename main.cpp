@@ -55,8 +55,8 @@ int main(int argc, char* argv[])
 {
 
     Query statement;
-    statement.select("O.ORDER_ID AS ID", "O.USER_ID");
-    statement.from("Order");
+    statement.select_distinct("O.ORDER_ID AS ID", "O.USER_ID", "U.USER_ID");
+    statement.from("ORDER O", "USER U");
 
     std::cout << statement.get_select_statement() << "\n";
 

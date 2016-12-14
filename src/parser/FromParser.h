@@ -29,23 +29,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPPSQL_PARSEHELPER_H
-#define CPPSQL_PARSEHELPER_H
-#include <string>
-#include <sstream>
-#include <vector>
+#ifndef CPPSQL_FROMPARSER_H
+#define CPPSQL_FROMPARSER_H
+
+#include <From.h>
 namespace cppsql {
-static std::vector<std::string> split(const std::string& s, char delim)
-{
-    std::stringstream ss(s);
-    std::string item;
-    std::vector<std::string> elems;
-    while (std::getline(ss, item, delim)) {
-        elems.push_back(item);
-        // elems.push_back(std::move(item)); // if C++11 (based on comment from @mchiasson)
-    }
-    return elems;
-}
+class FromParser {
+public:
+    static From parse(const std::string statement) throw();
+};
 }
 
-#endif //CPPSQL_PARSEHELPER_H
+#endif //CPPSQL_FROMPARSER_H

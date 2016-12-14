@@ -76,22 +76,6 @@ cppsql::Query& cppsql::Query::operator=(Query& builder)
 //    return *this;
 //}
 
-cppsql::Query& cppsql::Query::from(From from)
-{
-    this->fromClauses_.push_back(from);
-    return *this;
-}
-cppsql::Query& cppsql::Query::from(const std::string table_name)
-{
-    this->fromClauses_.push_back(From(table_name));
-    return *this;
-}
-cppsql::Query& cppsql::Query::from(const std::string table_name, const std::string alias)
-{
-    this->fromClauses_.push_back(From(table_name, alias));
-    return *this;
-}
-
 void cppsql::Query::left_join(From left_table, From right_table, const Comparison comparison)
 {
     Join join(left_table, right_table, JoinType::LEFT, comparison);

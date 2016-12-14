@@ -36,6 +36,7 @@
 #include <string>
 #include <vector>
 #include <SelectParser.h>
+#include <FromParser.h>
 
 #include "From.h"
 #include "Join.h"
@@ -65,9 +66,31 @@ public:
         select(rest...);
     }
 
-    Query& from(From from);
-    Query& from(const std::string table_name);
-    Query& from(const std::string table_name, const std::string alias);
+    template<typename Type, typename = std::enable_if_t<std::is_class<std::string>::value>>
+    void select_distinct(Type statement)
+    {
+        selects_.push_back(SelectParser::parse(statement));
+        distinct_ = true;
+    }
+    template<typename Type, typename ... Types>
+    void select_distinct(Type statement, Types ... rest)
+    {
+        selects_.push_back(SelectParser::parse(statement));
+        distinct_ = true;
+        select_distinct(rest...);
+    }
+
+    template<typename Type, typename = std::enable_if_t<std::is_class<std::string>::value>>
+    void from(Type statement)
+    {
+        fromClauses_.push_back(FromParser::parse(statement));
+    }
+    template<typename Type, typename ... Types>
+    void from(Type statement, Types ... rest)
+    {
+        fromClauses_.push_back(FromParser::parse(statement));
+        from(rest...);
+    }
 
     void left_join(From left_table,
             From right_table,
@@ -120,6 +143,7 @@ private:
     std::vector<From> fromClauses_;
     std::vector<Join> joins_;
     std::vector<Where> whereClauses_;
+
 };
 
 }

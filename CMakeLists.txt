@@ -6,6 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 include_directories(/usr/include/mysql)
 include_directories(src/query)
+include_directories(src/query/workflow)
 include_directories(src/connection)
 include_directories(src/defines)
 include_directories(src/table)
@@ -40,7 +41,7 @@ set(SOURCE_FILES
         src/query/Value.h
         src/parser/SelectParser.cpp
         src/parser/SelectParser.h
-        src/parser/ParseHelper.h)
+        src/parser/ParseHelper.h src/parser/FromParser.cpp src/parser/FromParser.h)
 
 add_executable(cppsql main.cpp ${SOURCE_FILES})
 target_link_libraries(cppsql mysqlclient)
