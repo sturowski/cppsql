@@ -107,7 +107,6 @@ const std::string cppsql::Query::create_select_statement(cppsql::Params& params)
     }
 
     if (!params.is_empty()) {
-        d
         this->replace_params(statement, params);
     }
     return statement;
