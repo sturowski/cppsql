@@ -47,7 +47,9 @@ static const char* ErrorNames[] = {
         "Commit transaction failed",
         "Rollback transaction failed",
         "The parsing string contains no value.",
-        "The number of arguments doesn't match."
+        "The number of arguments doesn't match.",
+        "Paramter index is out of range.",
+        "The count of params mismatch the count of ?."
 };
 
 enum Errors {
@@ -63,6 +65,8 @@ enum Errors {
   SQL_ROLLBACK_TRANSACTION_FAILED,
   PARSER_EMPTY_STRING,
   PARSER_NO_MATCHING_NUMBER_OF_ARGUMENTS,
+  PARAMS_INDEX_OUT_OF_RANGE,
+  PARAMS_MISMATCH_COUNT_OF_PARAMS,
   SIZE_OF_ERRORS
 };
 
