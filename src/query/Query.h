@@ -126,10 +126,10 @@ public:
     virtual const std::string to_string() const override;
     const bool is_distinct() const;
     const bool has_selects() const;
-    const bool has_fromClauses() const;
+    const bool has_from_clauses() const;
     const bool has_joins() const;
-    const bool has_whereClauses() const;
-    const bool has_orderByConditions() const;
+    const bool has_where_clauses() const;
+    const bool has_order_by_conditions() const;
 
     const bool set_distinct(const bool distinct);
 

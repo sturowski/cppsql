@@ -85,14 +85,14 @@ const std::string cppsql::Query::get_select_statement() const
 {
     if (!this->has_selects())
         throw ErrorNames[Errors::QUERY_CONTAINS_NO_SELECT];
-    if (!this->has_fromClauses())
+    if (!this->has_from_clauses())
         throw ErrorNames[Errors::QUERY_CONTAINS_NO_FROM];
 
     std::string statement;
     statement += this->create_select_string();
     statement += " ";
     statement += this->create_from_string();
-    if(this->has_whereClauses()) {
+    if (this->has_where_clauses()) {
         statement += " ";
         statement += this->create_where_string();
     }
@@ -163,11 +163,11 @@ const bool cppsql::Query::empty() const
     bool empty = true;
     if (!this->has_selects())
         empty = false;
-    if (!this->has_fromClauses())
+    if (!this->has_from_clauses())
         empty = false;
     if (!this->has_joins())
         empty = false;
-    if (!this->has_whereClauses())
+    if (!this->has_where_clauses())
         empty = false;
     return empty;
 }
@@ -180,7 +180,7 @@ const bool cppsql::Query::has_selects() const
     return !this->selects_.empty();
 }
 
-const bool cppsql::Query::has_fromClauses() const
+const bool cppsql::Query::has_from_clauses() const
 {
     return !this->fromClauses_.empty();
 }
@@ -190,12 +190,12 @@ const bool cppsql::Query::has_joins() const
     return !this->joins_.empty();
 }
 
-const bool cppsql::Query::has_whereClauses() const
+const bool cppsql::Query::has_where_clauses() const
 {
     return !this->whereClauses_.empty();;
 }
 
-const bool cppsql::Query::has_orderByConditions() const
+const bool cppsql::Query::has_order_by_conditions() const
 {
     return false;
 }
