@@ -1,42 +1,49 @@
 cmake_minimum_required(VERSION 2.8.6)
 project(cppsql)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 
 include_directories(/usr/include/mysql)
 include_directories(src/query)
+include_directories(src/query/workflow)
 include_directories(src/connection)
 include_directories(src/defines)
 include_directories(src/table)
 include_directories(src/tools)
+include_directories(src/parser)
 
 set(SOURCE_FILES
-        src/query/query.h
-        src/query/query.cpp
-        src/query/select.h
-        src/query/select.cpp
-        src/defines/errors.h
-        src/query/from.h
-        src/query/from.cpp
-        src/query/join.cpp
-        src/query/join.h
-        src/defines/defines.h
-        src/defines/defines.cpp
-        src/query/where.cpp
-        src/query/where.h
-        src/tools/resourcemanager.h
-        src/connection/mysqlconnection.h
-        src/connection/mysqlconnection.cpp
-        src/connection/connection.cpp
-        src/connection/connection.h
-        src/table/row.h
-        src/table/table.h
-        src/table/row.cpp
-        src/table/table.cpp
-        src/query/object.h
-        src/query/value.cpp
-        src/query/value.h)
+        src/query/Query.h
+        src/query/Query.cpp
+        src/query/Select.h
+        src/query/Select.cpp
+        src/defines/Errors.h
+        src/query/From.h
+        src/query/From.cpp
+        src/query/Join.cpp
+        src/query/Join.h
+        src/defines/Defines.h
+        src/defines/Defines.cpp
+        src/query/Where.cpp
+        src/query/Where.h
+        src/tools/ResourceManager.h
+        src/connection/MysqlConnection.h
+        src/connection/MysqlConnection.cpp
+        src/connection/Connection.cpp
+        src/connection/Connection.h
+        src/table/Row.h
+        src/table/Table.h
+        src/table/Row.cpp
+        src/table/Table.cpp
+        src/query/Object.h
+        src/query/Value.cpp
+        src/query/Value.h
+        src/parser/SelectParser.cpp
+        src/parser/SelectParser.h
+        src/parser/ParseHelper.h
+        src/parser/FromParser.cpp
+        src/parser/FromParser.h)
 
 add_executable(cppsql main.cpp ${SOURCE_FILES})
 target_link_libraries(cppsql mysqlclient)

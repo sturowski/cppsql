@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
+    
+    Created on 13.11.16
 
-    Created on 21.11.16
-
-    This file is part of cppsql, a C++ collection.
+    This file is part of tools, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -29,19 +29,38 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "value.h"
+#ifndef CPPSQL_CONNECTION_H
+#define CPPSQL_CONNECTION_H
+#include <string>
+#include "Row.h"
+#include <vector>
+#include "Table.h"
 
+namespace cppsql {
 
-cppsql::Value::Value(std::string val)
-        :value_(val) { }
+class Connection {
+public:
+    Connection() throw() { };
+    virtual ~Connection() { };
 
+    virtual void connect(const std::string host, const std::string user, const std::string password,
+            const std::string database,
+            const int port) throw();
 
-const std::string cppsql::Value::to_string() const
-{
-    return value_;
+    virtual void close()=0;
+    virtual Table query(const std::string query) throw() =0;
+    virtual void start_transaction() throw() =0;
+    virtual void commit() throw() =0;
+    virtual void rollback() throw() =0;
+
+protected:
+    std::string host_;
+    std::string user_;
+    std::string password_;
+    std::string database_;
+    int port;
+};
+
 }
 
-const bool cppsql::Value::empty() const
-{
-    return value_.empty();
-}
+#endif //CPPSQL_CONNECTION_H

@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
+    
+    Created on 13.11.16
 
-    Created on 21.11.16
-
-    This file is part of cppsql, a C++ collection.
+    This file is part of tools, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -29,22 +29,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPPSQL_VALUE_H
-#define CPPSQL_VALUE_H
-
-#include "object.h"
-
-namespace cppsql {
-class Value : public Object {
-public:
-    Value(std::string val);
-    virtual const std::string to_string() const override;
-
-    virtual const bool empty() const override;
-
-private:
-    std::string value_;
-};
+#include "Connection.h"
+void cppsql::Connection::connect(const std::string host, const std::string user, const std::string password,
+        const std::string database, const int port) throw()
+{
+    this->host_ = host;
+    this->user_ = user;
+    this->password_ = password;
+    this->database_ = database;
+    this->port = port;
 }
-
-#endif //CPPSQL_VALUE_H

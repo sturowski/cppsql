@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
-
-    Created on 25.10.16
+    
+    Created on 20.10.16
 
     This file is part of cppsql, a C++ collection.
 
@@ -29,29 +29,44 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "join.h"
+#include "Select.h"
 
-cppsql::Join::Join(From left_table,
-        From right_table,
-        const JoinType type,
-        const Comparison comparison)
+cppsql::Select::Select(const std::string column_name)
         :
-        left_table_(left_table),
-        right_table_(right_table),
-        type_(type),
-        comparison_(comparison) { }
-
-const std::string cppsql::Join::GetJoinStatement() const
+        column_name_(column_name)
 {
-    std::string statement = "(";
-    statement += left_table_.get_table_name()+" "+left_table_.get_alias()
-            +" "; // Adding the first element of the join
-    statement += to_s(type_)+" ";
-    statement += right_table_.get_table_name()+" "+right_table_.get_alias()
-            +" "; // Adding the second element of the join
-    statement += "on "+left_table_.get_join_column()+" "
-            +to_s(comparison_)+" "+right_table_.get_join_column();
-    statement += ")";
+}
 
+cppsql::Select::Select(const std::string column_name, const std::string table_name, const std::string alias)
+        :
+        column_name_(column_name),
+        table_name_(table_name),
+        alias_(alias)
+{
+}
+
+const std::string cppsql::Select::to_string()
+{
+    return this->create_string();
+}
+
+const std::string cppsql::Select::create_string() const
+{
+    std::string statement;
+    if (!this->table_name_.empty())
+        statement = this->table_name_+".";
+    statement += this->column_name_;
+    if (!this->alias_.empty())
+        statement += " AS "+this->alias_;
     return statement;
 }
+
+const std::string cppsql::Select::to_string() const
+{
+    return this->create_string();
+}
+const std::string cppsql::Select::get_alias() const
+{
+    return this->alias_;
+}
+

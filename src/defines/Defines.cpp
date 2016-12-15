@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
-    
-    Created on 20.10.16
+
+    Created on 25.10.16
 
     This file is part of cppsql, a C++ collection.
 
@@ -29,43 +29,55 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <map>
-#include <iostream>
-#include <memory>
-#include <Defines.h>
-#include <Where.h>
+#include "Defines.h"
 
-using namespace cppsql;
+static const char* ComparisonNames[] = {
+        "=",
+        "<>",
+        ">",
+        "<",
+        ">=",
+        "<=",
+        "IS NULL",
+        "IS NOT NULL",
+        "IN"
+};
 
-
-
-int main(int argc, char* argv[])
+::std::string cppsql::to_s(Comparison cmp)
 {
-
-    Query statement;
-    statement.select_distinct("O.ORDER_ID AS ID", "O.USER_ID", "U.USER_ID")
-            .from("ORDER O", "USER U");
-
-    std::cout << statement.get_select_statement() << "\n";
-
-
-//    //AND (DATE_LAST IS NULL OR DATE_LAST = 0 OR DATE_LAST >= 20161107)
-//    Where test("DATE_LAST", "20161107", Comparison::GREATER_EQUALS_THAN, Operator::OR);
-//    Where test1("DATE_LAST", "0", test, Comparison::EQUALS, Operator::OR);
-//    Where test2("DATE_LAST", "", test, Comparison::IS_NULL, Operator::AND);
-//    std::cout << test2.to_string() << std::endl;
-//
-//    //AND (ORDER_ID IN (SELECT ORDER_ID FROM SEPA_STANDIN_ODERS))
-//    Query query;
-//    query.select("ORDER_ID").from("SEPA_STANDIN_ODERS");
-//    Where test3("ORDER_ID", query, Comparison::IN, Operator::AND);
-//    std::cout << test3.to_string() << std::endl;
-//
-//    //AND (DATE_END IS NULL AND (DATE_BEGIN IS NOT NULL OR TYPE = "NO_END"))
-//    Where test4("TYPE", "'NO_END'", Comparison::EQUALS, Operator::OR);
-//    Where test5("DATE_BEGIN", "", test4, Comparison::IS_NOT_NULL, Operator::AND);
-//    Where test6("DATE_END", "", test5, Comparison::IS_NULL, Operator::AND);
-//    std::cout << test6.to_string() << std::endl;
-
-
+    return ComparisonNames[static_cast<int>(cmp)];
 }
+
+static const char* JoinTypeNames[] = {
+        "LEFT JOIN",
+        "RIGHT JOIN",
+        "INNER JOIN"
+};
+
+::std::string cppsql::to_s(JoinType type)
+{
+    return JoinTypeNames[static_cast<int>(type)];
+}
+
+static const char* OperatorsNames[] = {
+        "AND",
+        "OR"
+};
+
+::std::string cppsql::to_s(Operator op)
+{
+    return OperatorsNames[static_cast<int>(op)];
+}
+
+// Checks
+// statically check that the size of ComparisonNames fits the number of Comparison
+static_assert(sizeof(ComparisonNames)/sizeof(char*)==static_cast<int>(cppsql::Comparison::IN)+1,
+        "Comparison sizes dont match");
+
+// statically check that the size of JoinTypeNames fits the number of JoinType
+static_assert(sizeof(JoinTypeNames)/sizeof(char*)==static_cast<int>(cppsql::JoinType::INNER)+1,
+        "JoinType sizes dont match");
+
+// statically check that the size of OperatorsNames fits the number of Operator
+static_assert(sizeof(OperatorsNames)/sizeof(char*)==static_cast<int>(cppsql::Operator::OR)+1,
+        "Operator sizes dont match");

@@ -28,31 +28,63 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#ifndef CPPSQL_JOIN_H
-#define CPPSQL_JOIN_H
+#include "From.h"
 
-#include <string>
-#include "../defines/defines.h"
-#include "from.h"
-
-namespace cppsql {
-
-class Join {
-public:
-
-    Join(From left_table,
-            From right_table,
-            const JoinType type,
-            const Comparison comparison);
-
-    const std::string GetJoinStatement() const;
-
-private:
-    From left_table_;
-    From right_table_;
-    JoinType type_;
-    Comparison comparison_;
-};
-
+cppsql::From::From(const std::string table_name)
+        :
+        table_name_(table_name)
+{
 }
-#endif //CPPSQL_JOIN_H
+
+cppsql::From::From(const std::string table_name, const std::string alias)
+        :
+        table_name_(table_name),
+        alias_(alias)
+{
+}
+
+cppsql::From::From(const std::string table_name, const std::string alias, const std::string join_column)
+        :
+        table_name_(table_name),
+        alias_(alias),
+        join_column_(join_column)
+{
+}
+
+const std::string cppsql::From::to_string()
+{
+    return create_string();
+}
+
+const std::string cppsql::From::to_string() const
+{
+    return create_string();
+}
+
+const std::string cppsql::From::create_string() const
+{
+    std::string statement = this->table_name_;
+    if (!this->alias_.empty())
+        statement += " "+this->alias_;
+    return statement;
+}
+
+const std::string cppsql::From::get_table_name() const
+{
+    return this->table_name_;
+}
+
+const std::string cppsql::From::get_alias() const
+{
+    return this->alias_;
+}
+
+const std::string cppsql::From::get_join_column() const
+{
+    std::string statement;
+    if (!this->alias_.empty())
+        statement = this->alias_+".";
+
+    return statement+this->join_column_;
+}
+

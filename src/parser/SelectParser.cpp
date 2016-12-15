@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
+    
+    Created on 13.12.16
 
-    Created on 25.10.16
-
-    This file is part of cppsql, a C++ collection.
+    This file is part of tools, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -28,63 +28,35 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "from.h"
 
-cppsql::From::From(const std::string table_name)
-        :
-        table_name_(table_name)
+#include <SelectParser.h>
+#include <ParseHelper.h>
+#include <Errors.h>
+cppsql::Select cppsql::SelectParser::parse(const std::string statement) throw()
 {
+    std::vector<std::string> entries = std::move(split(statement, ' '));
+    if (entries.size()==0)
+        throw SqlException(Errors::PARSER_EMPTY_STRING);
+    if (entries.size()==2 || entries.size()>3)
+        throw SqlException(Errors::PARSER_NO_MATCHING_NUMBER_OF_ARGUMENTS);
+
+    std::vector<std::string> column_entries = std::move(split(entries[0], '.'));
+    if (column_entries.size()>2)
+        throw SqlException(Errors::PARSER_NO_MATCHING_NUMBER_OF_ARGUMENTS);
+
+    std::string table;
+    std::string column;
+    std::string alias;
+
+    if (column_entries.size()==2) {
+        table = column_entries[0];
+        column = column_entries[1];
+    }
+    else
+        column = column_entries[0];
+
+    if (entries.size()==3)
+        alias = entries[2];
+
+    return Select(column, table, alias);
 }
-
-cppsql::From::From(const std::string table_name, const std::string alias)
-        :
-        table_name_(table_name),
-        alias_(alias)
-{
-}
-
-cppsql::From::From(const std::string table_name, const std::string alias, const std::string join_column)
-        :
-        table_name_(table_name),
-        alias_(alias),
-        join_column_(join_column)
-{
-}
-
-const std::string cppsql::From::to_string()
-{
-    return create_string();
-}
-
-const std::string cppsql::From::to_string() const
-{
-    return create_string();
-}
-
-const std::string cppsql::From::create_string() const
-{
-    std::string statement = this->table_name_;
-    if (!this->alias_.empty())
-        statement += " "+this->alias_;
-    return statement;
-}
-
-const std::string cppsql::From::get_table_name() const
-{
-    return this->table_name_;
-}
-
-const std::string cppsql::From::get_alias() const
-{
-    return this->alias_;
-}
-
-const std::string cppsql::From::get_join_column() const
-{
-    std::string statement;
-    if (!this->alias_.empty())
-        statement = this->alias_+".";
-
-    return statement+this->join_column_;
-}
-

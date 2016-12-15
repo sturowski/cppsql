@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
     
-    Created on 13.11.16
+    Created on 13.12.16
 
     This file is part of tools, a C++ collection.
 
@@ -29,31 +29,22 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPPSQL_MYSQLCONNECTION_H
-#define CPPSQL_MYSQLCONNECTION_H
-#include <my_global.h>
-#include <mysql.h>
-#undef min
-#undef max
-#undef test
-#include <connection.h>
+#include <vector>
+#include <Errors.h>
+#include "FromParser.h"
+#include "ParseHelper.h"
+cppsql::From cppsql::FromParser::parse(const std::string statement) throw()
+{
+    std::vector<std::string> entries = std::move(split(statement, ' '));
+    if (entries.size()==0)
+        throw SqlException(Errors::PARSER_EMPTY_STRING);
+    if (entries.size()>2)
+        throw SqlException(Errors::PARSER_NO_MATCHING_NUMBER_OF_ARGUMENTS);
 
-namespace cppsql {
+    std::string table = entries[0];
+    std::string alias;
+    if (entries.size()==2)
+        alias = entries[1];
 
-class MySqlConnection : public Connection {
-public:
-    MySqlConnection() throw();
-    virtual ~MySqlConnection();
-    virtual void connect(const std::string host, const std::string user, const std::string password,
-            const std::string database, const int port) throw() override;
-    virtual void close() override;
-    virtual Table query(const std::string query) throw() override;
-    virtual void start_transaction() throw() override;
-    virtual void commit() throw() override;
-    virtual void rollback() throw() override;
-protected:
-    MYSQL* con_;
-
-};
+    return From(table, alias);
 }
-#endif //CPPSQL_MYSQLCONNECTION_H

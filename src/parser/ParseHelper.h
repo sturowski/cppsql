@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
     
-    Created on 19.11.16
+    Created on 13.12.16
 
     This file is part of tools, a C++ collection.
 
@@ -29,23 +29,23 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CPPSQL_TABLE_H
-#define CPPSQL_TABLE_H
-
-#include "row.h"
+#ifndef CPPSQL_PARSEHELPER_H
+#define CPPSQL_PARSEHELPER_H
+#include <string>
+#include <sstream>
+#include <vector>
 namespace cppsql {
-class Table {
-public:
-    Row& operator[](std::size_t idx);
-    const Row& operator[](std::size_t idx) const;
-    void add_row(Row row);
-    unsigned long size();
-    const std::vector<Row>& rows();
-
-private:
-    std::vector<Row> rows_;
-};
-
+static std::vector<std::string> split(const std::string& s, char delim)
+{
+    std::stringstream ss(s);
+    std::string item;
+    std::vector<std::string> elems;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+        // elems.push_back(std::move(item)); // if C++11 (based on comment from @mchiasson)
+    }
+    return elems;
+}
 }
 
-#endif //CPPSQL_TABLE_H
+#endif //CPPSQL_PARSEHELPER_H

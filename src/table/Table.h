@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
     
-    Created on 20.10.16
+    Created on 19.11.16
 
-    This file is part of cppsql, a C++ collection.
+    This file is part of tools, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -29,44 +29,23 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "select.h"
+#ifndef CPPSQL_TABLE_H
+#define CPPSQL_TABLE_H
 
-cppsql::Select::Select(const std::string column_name)
-        :
-        column_name_(column_name)
-{
+#include "Row.h"
+namespace cppsql {
+class Table {
+public:
+    Row& operator[](std::size_t idx);
+    const Row& operator[](std::size_t idx) const;
+    void add_row(Row row);
+    unsigned long size();
+    const std::vector<Row>& rows();
+
+private:
+    std::vector<Row> rows_;
+};
+
 }
 
-cppsql::Select::Select(const std::string column_name, const std::string table_name, const std::string alias)
-        :
-        column_name_(column_name),
-        table_name_(table_name),
-        alias_(alias)
-{
-}
-
-const std::string cppsql::Select::to_string()
-{
-    return this->create_string();
-}
-
-const std::string cppsql::Select::create_string() const
-{
-    std::string statement;
-    if (!this->table_name_.empty())
-        statement = this->table_name_+".";
-    statement += this->column_name_;
-    if (!this->alias_.empty())
-        statement += " AS "+this->alias_;
-    return statement;
-}
-
-const std::string cppsql::Select::to_string() const
-{
-    return this->create_string();
-}
-const std::string cppsql::Select::get_alias() const
-{
-    return this->alias_;
-}
-
+#endif //CPPSQL_TABLE_H

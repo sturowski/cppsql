@@ -1,9 +1,9 @@
 /*
     Copyright (c) 2016 Sven Turowski <sventurowski@gmx.de>
-    
-    Created on 13.11.16
 
-    This file is part of tools, a C++ collection.
+    Created on 25.10.16
+
+    This file is part of cppsql, a C++ collection.
 
     cppsql is free software; you can redistribute it and/or modify it under
     the terms of the GNU Lesser General Public License (LGPL) as published
@@ -28,14 +28,31 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+#ifndef CPPSQL_JOIN_H
+#define CPPSQL_JOIN_H
 
-#include "connection.h"
-void cppsql::Connection::connect(const std::string host, const std::string user, const std::string password,
-        const std::string database, const int port) throw()
-{
-    this->host_ = host;
-    this->user_ = user;
-    this->password_ = password;
-    this->database_ = database;
-    this->port = port;
+#include <string>
+#include "Defines.h"
+#include "From.h"
+
+namespace cppsql {
+
+class Join {
+public:
+
+    Join(From left_table,
+            From right_table,
+            const JoinType type,
+            const Comparison comparison);
+
+    const std::string GetJoinStatement() const;
+
+private:
+    From left_table_;
+    From right_table_;
+    JoinType type_;
+    Comparison comparison_;
+};
+
 }
+#endif //CPPSQL_JOIN_H

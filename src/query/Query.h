@@ -35,12 +35,14 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <SelectParser.h>
+#include <FromParser.h>
 
-#include "from.h"
-#include "join.h"
-#include "select.h"
-#include "where.h"
-#include "object.h"
+#include "From.h"
+#include "Join.h"
+#include "Select.h"
+#include "Where.h"
+#include "Object.h"
 
 namespace cppsql {
 class Where;
@@ -52,13 +54,45 @@ public:
     Query& operator=(Query& builder);
     virtual ~Query() { }
 
-    Query& select(Select select);
-    Query& select(const std::string column_name);
-    Query& select(const std::string column_name, const std::string table_name, const std::string alias = "");
+    template<typename Type, typename = std::enable_if_t<std::is_class<std::string>::value>>
+    Query& select(Type statement)
+    {
+        selects_.push_back(SelectParser::parse(statement));
+        return *this;
+    }
+    template<typename Type, typename ... Types>
+    Query& select(Type statement, Types ... rest)
+    {
+        selects_.push_back(SelectParser::parse(statement));
+        return select(rest...);
+    }
 
-    Query& from(From from);
-    Query& from(const std::string table_name);
-    Query& from(const std::string table_name, const std::string alias);
+    template<typename Type, typename = std::enable_if_t<std::is_class<std::string>::value>>
+    Query& select_distinct(Type statement)
+    {
+        selects_.push_back(SelectParser::parse(statement));
+        distinct_ = true;
+        return *this;
+    }
+    template<typename Type, typename ... Types>
+    Query& select_distinct(Type statement, Types ... rest)
+    {
+        selects_.push_back(SelectParser::parse(statement));
+        return select_distinct(rest...);
+    }
+
+    template<typename Type, typename = std::enable_if_t<std::is_class<std::string>::value>>
+    Query& from(Type statement)
+    {
+        fromClauses_.push_back(FromParser::parse(statement));
+        return *this;
+    }
+    template<typename Type, typename ... Types>
+    Query& from(Type statement, Types ... rest)
+    {
+        fromClauses_.push_back(FromParser::parse(statement));
+        return from(rest...);
+    }
 
     void left_join(From left_table,
             From right_table,
@@ -71,18 +105,18 @@ public:
             const Comparison comparison);
 
     Query& where(Where where);
-    Query& and_where(std::string left_val, std::string right_val, Comparison comparison);
-    Query& and_where(std::string left_val, Query& right_val, Comparison comparison);
-    Query& and_where(Query& left_val, std::string right_val, Comparison comparison);
-    Query& and_where(std::string left_val, std::string right_val, Where& extension, Comparison comparison);
-    Query& and_where(std::string left_val, Query&  right_val, Where&  extension, Comparison comparison);
-    Query& and_where(Query&  left_val, std::string right_val, Where&  extension, Comparison comparison);
-    Query& or_where(std::string left_val, std::string right_val, Comparison comparison);
-    Query& or_where(std::string left_val, Query& right_val, Comparison comparison);
-    Query& or_where(Query& left_val, std::string right_val, Comparison comparison);
-    Query& or_where(std::string left_val, std::string right_val, Where& extension, Comparison comparison);
-    Query& or_where(std::string left_val, Query&  right_val, Where&  extension, Comparison comparison);
-    Query& or_where(Query&  left_val, std::string right_val, Where&  extension, Comparison comparison);
+    Query& and_where(std::string left_val, Comparison comparison, std::string right_val);
+    Query& and_where(std::string left_val, Comparison comparison, Query& right_val);
+    Query& and_where(Query& left_val, Comparison comparison, std::string right_val);
+    Query& and_where(std::string left_val, Comparison comparison, std::string right_val, Where& extension);
+    Query& and_where(std::string left_val, Comparison comparison, Query& right_val, Where& extension);
+    Query& and_where(Query& left_val, Comparison comparison, std::string right_val, Where& extension);
+    Query& or_where(std::string left_val, Comparison comparison, std::string right_val);
+    Query& or_where(std::string left_val, Comparison comparison, Query& right_val);
+    Query& or_where(Query& left_val, Comparison comparison, std::string right_val);
+    Query& or_where(std::string left_val, Comparison comparison, std::string right_val, Where& extension);
+    Query& or_where(std::string left_val, Comparison comparison, Query& right_val, Where& extension);
+    Query& or_where(Query& left_val, Comparison comparison, std::string right_val, Where& extension);
 
 
 
@@ -111,6 +145,7 @@ private:
     std::vector<From> fromClauses_;
     std::vector<Join> joins_;
     std::vector<Where> whereClauses_;
+
 };
 
 }

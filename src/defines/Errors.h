@@ -45,7 +45,9 @@ static const char* ErrorNames[] = {
         "Getting error by executing the query",
         "Start transaction failed",
         "Commit transaction failed",
-        "Rollback transaction failed"
+        "Rollback transaction failed",
+        "The parsing string contains no value.",
+        "The number of arguments doesn't match."
 };
 
 enum Errors {
@@ -59,6 +61,8 @@ enum Errors {
   SQL_START_TRANSACTION_FAILED,
   SQL_COMMIT_TRANSACTION_FAILED,
   SQL_ROLLBACK_TRANSACTION_FAILED,
+  PARSER_EMPTY_STRING,
+  PARSER_NO_MATCHING_NUMBER_OF_ARGUMENTS,
   SIZE_OF_ERRORS
 };
 

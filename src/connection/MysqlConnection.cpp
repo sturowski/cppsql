@@ -29,8 +29,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "mysqlconnection.h"
-#include "../defines/errors.h"
+#include "MysqlConnection.h"
+#include "Errors.h"
 /**
  * The basic contructor, will initialize this MySql connection.
  * If the mysql_init fails and con will be nullpr it throws an exception.
