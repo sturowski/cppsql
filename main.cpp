@@ -44,9 +44,23 @@ int main(int argc, char* argv[])
 
     Query statement;
     statement.select_distinct("O.ORDER_ID AS ID", "O.USER_ID", "U.USER_ID")
-            .from("ORDER O", "USER U");
+            .from("ORDER O", "USER U")
+            .and_where("O.ORDER_ID", EQUALS, "?")
+            .and_where("O.BANK_ID", EQUALS, "?");
+    Where test("DATE_LAST", Comparison::GREATER_EQUALS_THAN, "20161107", Operator::OR);
+    Where test1("DATE_LAST", Comparison::EQUALS, "0", test, Operator::OR);
+    statement.and_where("DATE_LAST", Comparison::IS_NULL, "", test);
 
-    std::cout << statement.get_select_statement() << "\n";
+    Params para;
+    para.add_param("12345678");
+    para.add_param("25400011");
+
+    Params para2;
+    para2.add_param("45678903");
+    para2.add_param("25400011");
+
+    std::cout << statement.statement(para) << "\n";
+    std::cout << statement.statement(para2) << "\n";
 
 
 //    //AND (DATE_LAST IS NULL OR DATE_LAST = 0 OR DATE_LAST >= 20161107)

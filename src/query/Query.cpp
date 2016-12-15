@@ -29,6 +29,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <ParseHelper.h>
+#include <algorithm>
 #include "Errors.h"
 #include "Query.h"
 
@@ -43,7 +45,8 @@ cppsql::Query::Query(const Query& builder)
         distinct_(builder.distinct_),
         selects_(builder.selects_),
         fromClauses_(builder.fromClauses_),
-        whereClauses_(builder.whereClauses_)
+        whereClauses_(builder.whereClauses_),
+        type_(TYPE::NO)
 {
 
 }
@@ -81,14 +84,20 @@ cppsql::Query& cppsql::Query::where(Where where)
     return *this;
 }
 
-const std::string cppsql::Query::get_select_statement() const
+const std::string cppsql::Query::statement(Params params) const throw()
+{
+    if (this->type_==TYPE::SELECT)
+        return create_select_statement(params);
+    return "";
+}
+const std::string cppsql::Query::create_select_statement(cppsql::Params& params) const
 {
     if (!this->has_selects())
-        throw ErrorNames[Errors::QUERY_CONTAINS_NO_SELECT];
+        throw cppsql::ErrorNames[cppsql::QUERY_CONTAINS_NO_SELECT];
     if (!this->has_from_clauses())
-        throw ErrorNames[Errors::QUERY_CONTAINS_NO_FROM];
+        throw cppsql::ErrorNames[cppsql::QUERY_CONTAINS_NO_FROM];
 
-    std::string statement;
+    std::__cxx11::string statement;
     statement += this->create_select_string();
     statement += " ";
     statement += this->create_from_string();
@@ -97,6 +106,9 @@ const std::string cppsql::Query::get_select_statement() const
         statement += this->create_where_string();
     }
 
+    if (!params.is_empty()) {
+        this->replace_params(statement, params);
+    }
     return statement;
 }
 const std::string cppsql::Query::create_select_string() const
@@ -207,7 +219,7 @@ const bool cppsql::Query::set_distinct(const bool distinct)
 
 const std::string cppsql::Query::to_string() const
 {
-    return get_select_statement();
+    return statement();
 }
 
 cppsql::Query& cppsql::Query::and_where(std::string left_val, cppsql::Comparison comparison, std::string right_val)
@@ -298,6 +310,23 @@ cppsql::Query& cppsql::Query::or_where(cppsql::Query& left_val, cppsql::Comparis
     Where where(left_val, comparison, right_val, Operator::OR);
     this->whereClauses_.push_back(where);
     return *this;
+}
+
+const void cppsql::Query::replace_params(std::string& statement, cppsql::Params& params) const throw()
+{
+    long placeholder_count = std::count(statement.begin(), statement.end(), '?');
+    std::vector<std::string> elements = split(statement, '?');
+    if (placeholder_count!=params.size())
+        throw SqlException(Errors::PARAMS_MISMATCH_COUNT_OF_PARAMS);
+    statement.clear();
+    for (int i = 0; i<placeholder_count; i++) {
+        statement += elements[i]+"'"+params[i]+"'";
+    }
+}
+void cppsql::Query::set_type(cppsql::Query::TYPE type)
+{
+    if (this->type_==TYPE::NO)
+        this->type_ = type;
 }
 
 

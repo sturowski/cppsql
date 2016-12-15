@@ -43,6 +43,7 @@
 #include "Select.h"
 #include "Where.h"
 #include "Object.h"
+#include "Params.h"
 
 namespace cppsql {
 class Where;
@@ -58,6 +59,7 @@ public:
     Query& select(Type statement)
     {
         selects_.push_back(SelectParser::parse(statement));
+        set_type(TYPE::SELECT);
         return *this;
     }
     template<typename Type, typename ... Types>
@@ -72,6 +74,7 @@ public:
     {
         selects_.push_back(SelectParser::parse(statement));
         distinct_ = true;
+        set_type(TYPE::SELECT);
         return *this;
     }
     template<typename Type, typename ... Types>
@@ -118,9 +121,7 @@ public:
     Query& or_where(std::string left_val, Comparison comparison, Query& right_val, Where& extension);
     Query& or_where(Query& left_val, Comparison comparison, std::string right_val, Where& extension);
 
-
-
-    const std::string get_select_statement() const;
+    const std::string statement(Params params = Params()) const throw();
 
     virtual const bool empty() const override;
     virtual const std::string to_string() const override;
@@ -131,21 +132,26 @@ public:
     const bool has_where_clauses() const;
     const bool has_order_by_conditions() const;
 
-    const bool set_distinct(const bool distinct);
-
-    const std::string create_select_string() const;
-    const std::string create_from_string() const;
-    const std::string create_where_string() const;
-
-
-
 private:
+    enum class TYPE {
+        NO,
+        SELECT
+    };
+
     bool distinct_;
     std::vector<Select> selects_;
     std::vector<From> fromClauses_;
     std::vector<Join> joins_;
     std::vector<Where> whereClauses_;
+    TYPE type_;
+    void set_type(TYPE type);
 
+    const std::string create_select_statement(Params& params) const;
+    const void replace_params(std::string& statement, Params& params) const throw();
+    const std::string create_select_string() const;
+    const std::string create_from_string() const;
+    const std::string create_where_string() const;
+    const bool set_distinct(const bool distinct);
 };
 
 }
