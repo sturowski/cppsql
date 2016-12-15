@@ -246,7 +246,7 @@ cppsql::Query& cppsql::Query::and_where(cppsql::Query& left_val, cppsql::Compari
 cppsql::Query& cppsql::Query::and_where(std::string left_val, cppsql::Comparison comparison, std::string right_val,
         cppsql::Where& extension)
 {
-    Where where(left_val, comparison, right_val, Operator::AND);
+    Where where(left_val, comparison, right_val, extension, Operator::AND);
     this->whereClauses_.push_back(where);
     return *this;
 }
@@ -254,7 +254,7 @@ cppsql::Query& cppsql::Query::and_where(std::string left_val, cppsql::Comparison
 cppsql::Query& cppsql::Query::and_where(std::string left_val, cppsql::Comparison comparison, cppsql::Query& right_val,
         cppsql::Where& extension)
 {
-    Where where(left_val, comparison, right_val, Operator::AND);
+    Where where(left_val, comparison, right_val, extension, Operator::AND);
     this->whereClauses_.push_back(where);
     return *this;
 }
@@ -262,7 +262,7 @@ cppsql::Query& cppsql::Query::and_where(std::string left_val, cppsql::Comparison
 cppsql::Query& cppsql::Query::and_where(cppsql::Query& left_val, cppsql::Comparison comparison, std::string right_val,
         cppsql::Where& extension)
 {
-    Where where(left_val, comparison, right_val, Operator::AND);
+    Where where(left_val, comparison, right_val, extension, Operator::AND);
     this->whereClauses_.push_back(where);
     return *this;
 }
@@ -291,7 +291,7 @@ cppsql::Query& cppsql::Query::or_where(cppsql::Query& left_val, cppsql::Comparis
 cppsql::Query& cppsql::Query::or_where(std::string left_val, cppsql::Comparison comparison, std::string right_val,
         cppsql::Where& extension)
 {
-    Where where(left_val, comparison, right_val, Operator::OR);
+    Where where(left_val, comparison, right_val, extension, Operator::OR);
     this->whereClauses_.push_back(where);
     return *this;
 }
@@ -299,7 +299,7 @@ cppsql::Query& cppsql::Query::or_where(std::string left_val, cppsql::Comparison 
 cppsql::Query& cppsql::Query::or_where(std::string left_val, cppsql::Comparison comparison, cppsql::Query& right_val,
         cppsql::Where& extension)
 {
-    Where where(left_val, comparison, right_val, Operator::OR);
+    Where where(left_val, comparison, right_val, extension, Operator::OR);
     this->whereClauses_.push_back(where);
     return *this;
 }
@@ -307,7 +307,7 @@ cppsql::Query& cppsql::Query::or_where(std::string left_val, cppsql::Comparison 
 cppsql::Query& cppsql::Query::or_where(cppsql::Query& left_val, cppsql::Comparison comparison, std::string right_val,
         cppsql::Where& extension)
 {
-    Where where(left_val, comparison, right_val, Operator::OR);
+    Where where(left_val, comparison, right_val, extension, Operator::OR);
     this->whereClauses_.push_back(where);
     return *this;
 }
@@ -322,6 +322,8 @@ const void cppsql::Query::replace_params(std::string& statement, cppsql::Params&
     for (int i = 0; i<placeholder_count; i++) {
         statement += elements[i]+"'"+params[i]+"'";
     }
+    if (placeholder_count<elements.size())
+        statement += elements.back();
 }
 void cppsql::Query::set_type(cppsql::Query::TYPE type)
 {

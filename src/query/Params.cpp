@@ -54,3 +54,7 @@ bool cppsql::Params::is_empty()
 {
     return !static_cast<bool>(params_.size());
 }
+void cppsql::Params::clear()
+{
+    params_.clear();
+}

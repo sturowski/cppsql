@@ -41,6 +41,7 @@ public:
     const std::string& operator[](std::size_t idx) throw();
     unsigned long size();
     bool is_empty();
+    void clear();
 
 private:
     std::vector<std::string> params_;
