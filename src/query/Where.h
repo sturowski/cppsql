@@ -52,18 +52,13 @@ private:
     Operator operator_;
 
 public:
-    Where(std::string left_val, std::string right_val, Comparison comparison, Operator opt);
-    Where(std::string left_val, Query& right_val, Comparison comparison, Operator opt);
-    Where(Query& left_val, std::string right_val, Comparison comparison, Operator opt);
-    Where(std::string left_val, std::string right_val, Where& extension, Comparison comparison,
-            Operator opt);
-    Where(std::string left_val, Query&  right_val, Where&  extension,
-            Comparison comparison,
-            Operator opt);
-    Where(Query&  left_val, std::string right_val, Where&  extension,
-            Comparison comparison,
-            Operator opt);
-    const std::string to_string(bool with_operator=true) const;
+    Where(std::string left_val, Comparison comparison, std::string right_val, Operator opt);
+    Where(std::string left_val, Comparison comparison, Query& right_val, Operator opt);
+    Where(Query& left_val, Comparison comparison, std::string right_val, Operator opt);
+    Where(std::string left_val, Comparison comparison, std::string right_val, Where& extension, Operator opt);
+    Where(std::string left_val, Comparison comparison, Query& right_val, Where& extension, Operator opt);
+    Where(Query& left_val, Comparison comparison, std::string right_val, Where& extension, Operator opt);
+    const std::string to_string(bool with_operator = true) const;
 
     Operator get_operator_() const;
     const bool is_first() const;

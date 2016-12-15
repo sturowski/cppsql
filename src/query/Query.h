@@ -103,18 +103,18 @@ public:
             const Comparison comparison);
 
     Query& where(Where where);
-    Query& and_where(std::string left_val, std::string right_val, Comparison comparison);
-    Query& and_where(std::string left_val, Query& right_val, Comparison comparison);
-    Query& and_where(Query& left_val, std::string right_val, Comparison comparison);
-    Query& and_where(std::string left_val, std::string right_val, Where& extension, Comparison comparison);
-    Query& and_where(std::string left_val, Query&  right_val, Where&  extension, Comparison comparison);
-    Query& and_where(Query&  left_val, std::string right_val, Where&  extension, Comparison comparison);
-    Query& or_where(std::string left_val, std::string right_val, Comparison comparison);
-    Query& or_where(std::string left_val, Query& right_val, Comparison comparison);
-    Query& or_where(Query& left_val, std::string right_val, Comparison comparison);
-    Query& or_where(std::string left_val, std::string right_val, Where& extension, Comparison comparison);
-    Query& or_where(std::string left_val, Query&  right_val, Where&  extension, Comparison comparison);
-    Query& or_where(Query&  left_val, std::string right_val, Where&  extension, Comparison comparison);
+    Query& and_where(std::string left_val, Comparison comparison, std::string right_val);
+    Query& and_where(std::string left_val, Comparison comparison, Query& right_val);
+    Query& and_where(Query& left_val, Comparison comparison, std::string right_val);
+    Query& and_where(std::string left_val, Comparison comparison, std::string right_val, Where& extension);
+    Query& and_where(std::string left_val, Comparison comparison, Query& right_val, Where& extension);
+    Query& and_where(Query& left_val, Comparison comparison, std::string right_val, Where& extension);
+    Query& or_where(std::string left_val, Comparison comparison, std::string right_val);
+    Query& or_where(std::string left_val, Comparison comparison, Query& right_val);
+    Query& or_where(Query& left_val, Comparison comparison, std::string right_val);
+    Query& or_where(std::string left_val, Comparison comparison, std::string right_val, Where& extension);
+    Query& or_where(std::string left_val, Comparison comparison, Query& right_val, Where& extension);
+    Query& or_where(Query& left_val, Comparison comparison, std::string right_val, Where& extension);
 
 
 

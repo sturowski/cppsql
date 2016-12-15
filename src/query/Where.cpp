@@ -31,7 +31,7 @@
 
 #include "Where.h"
 
-cppsql::Where::Where(std::string left_val, std::string right_val, Comparison comparison, Operator opt)
+cppsql::Where::Where(std::string left_val, Comparison comparison, std::string right_val, Operator opt)
         :left_val_(std::make_shared<Value>(left_val)),
          right_val_(std::make_shared<Value>(right_val)),
          comparison_(comparison),
@@ -40,8 +40,7 @@ cppsql::Where::Where(std::string left_val, std::string right_val, Comparison com
 {
 }
 
-cppsql::Where::Where(std::string left_val, Query& right_val, Comparison comparison,
-        cppsql::Operator opt)
+cppsql::Where::Where(std::string left_val, Comparison comparison, Query& right_val, cppsql::Operator opt)
         :left_val_(std::make_shared<Value>(left_val)),
          right_val_(std::make_shared<Query>(right_val)),
          comparison_(comparison),
@@ -51,8 +50,7 @@ cppsql::Where::Where(std::string left_val, Query& right_val, Comparison comparis
 
 }
 
-cppsql::Where::Where(Query& left_val, std::string right_val, Comparison comparison,
-        cppsql::Operator opt)
+cppsql::Where::Where(Query& left_val, Comparison comparison, std::string right_val, cppsql::Operator opt)
         :left_val_(std::make_shared<Query>(left_val)),
          right_val_(std::make_shared<Value>(right_val)),
          comparison_(comparison),
@@ -62,8 +60,7 @@ cppsql::Where::Where(Query& left_val, std::string right_val, Comparison comparis
 
 }
 
-cppsql::Where::Where(std::string left_val, std::string right_val, Where& extension,
-        Comparison comparison,
+cppsql::Where::Where(std::string left_val, Comparison comparison, std::string right_val, Where& extension,
         Operator opt)
         :left_val_(std::make_shared<Value>(left_val)),
          right_val_(std::make_shared<Value>(right_val)),
@@ -77,8 +74,8 @@ cppsql::Where::Where(std::string left_val, std::string right_val, Where& extensi
         extension_->parent_ = std::make_shared<Where>(*this);
 }
 
-cppsql::Where::Where(std::string left_val, Query& right_val,
-        Where& extension, Comparison comparison, Operator opt)
+cppsql::Where::Where(std::string left_val, Comparison comparison, Query& right_val,
+        Where& extension, Operator opt)
         :left_val_(std::make_shared<Value>(left_val)),
          right_val_(std::make_shared<Query>(right_val)),
          extension_(std::make_shared<Where>(extension)),
@@ -90,8 +87,8 @@ cppsql::Where::Where(std::string left_val, Query& right_val,
         extension_->parent_ = std::make_shared<Where>(*this);
 };
 
-cppsql::Where::Where(Query& left_val, std::string right_val,
-        Where& extension, Comparison comparison, Operator opt)
+cppsql::Where::Where(Query& left_val, Comparison comparison, std::string right_val,
+        Where& extension, Operator opt)
         :left_val_(std::make_shared<Query>(left_val)),
          right_val_(std::make_shared<Value>(right_val)),
          extension_(std::make_shared<Where>(extension)),
