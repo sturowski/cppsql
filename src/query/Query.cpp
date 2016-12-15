@@ -97,7 +97,7 @@ const std::string cppsql::Query::create_select_statement(cppsql::Params& params)
     if (!this->has_from_clauses())
         throw cppsql::ErrorNames[cppsql::QUERY_CONTAINS_NO_FROM];
 
-    std::__cxx11::string statement;
+    std::string statement;
     statement += this->create_select_string();
     statement += " ";
     statement += this->create_from_string();
@@ -107,6 +107,7 @@ const std::string cppsql::Query::create_select_statement(cppsql::Params& params)
     }
 
     if (!params.is_empty()) {
+        d
         this->replace_params(statement, params);
     }
     return statement;
