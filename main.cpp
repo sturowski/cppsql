@@ -47,19 +47,25 @@ int main(int argc, char* argv[])
             .from("ORDER O", "USER U")
             .and_where("O.ORDER_ID", EQUALS, "?")
             .and_where("O.BANK_ID", EQUALS, "?");
-    Where where1("TYPE", Comparison::EQUALS, "'NO_END'", Operator::OR);
+    Where where1("TYPE", Comparison::EQUALS, "?", Operator::OR);
     Where where2("DATE_BEGIN", Comparison::IS_NOT_NULL, "", where1, Operator::AND);
     statement.and_where("DATE_END", Comparison::IS_NULL, "", where2);
 
     Params para;
     para.add_param("12345678");
     para.add_param("25400011");
+    para.add_param("NO_END");
     std::cout << statement.statement(para) << "\n";
 
     para.clear();
     para.add_param("45678903");
     para.add_param("25400011");
+    para.add_param("NO_END");
     std::cout << statement.statement(para) << "\n";
+
+    Query insert;
+    insert.insert_into("ORDER").columns("ORDER_ID", "ORDER_NAME");
+    std::cout << insert.statement(para) << "\n";
 
 
 //    //AND (DATE_LAST IS NULL OR DATE_LAST = 0 OR DATE_LAST >= 20161107)
