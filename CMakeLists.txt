@@ -41,7 +41,9 @@ set(SOURCE_FILES
         src/query/Value.h
         src/parser/SelectParser.cpp
         src/parser/SelectParser.h
-        src/parser/ParseHelper.h src/parser/FromParser.cpp src/parser/FromParser.h)
+        src/parser/ParseHelper.h
+        src/parser/FromParser.cpp
+        src/parser/FromParser.h)
 
 add_executable(cppsql main.cpp ${SOURCE_FILES})
 target_link_libraries(cppsql mysqlclient)

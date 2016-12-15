@@ -55,41 +55,43 @@ public:
     virtual ~Query() { }
 
     template<typename Type, typename = std::enable_if_t<std::is_class<std::string>::value>>
-    void select(Type statement)
+    Query& select(Type statement)
     {
         selects_.push_back(SelectParser::parse(statement));
+        return *this;
     }
     template<typename Type, typename ... Types>
-    void select(Type statement, Types ... rest)
+    Query& select(Type statement, Types ... rest)
     {
         selects_.push_back(SelectParser::parse(statement));
-        select(rest...);
+        return select(rest...);
     }
 
     template<typename Type, typename = std::enable_if_t<std::is_class<std::string>::value>>
-    void select_distinct(Type statement)
+    Query& select_distinct(Type statement)
     {
         selects_.push_back(SelectParser::parse(statement));
         distinct_ = true;
+        return *this;
     }
     template<typename Type, typename ... Types>
-    void select_distinct(Type statement, Types ... rest)
+    Query& select_distinct(Type statement, Types ... rest)
     {
         selects_.push_back(SelectParser::parse(statement));
-        distinct_ = true;
-        select_distinct(rest...);
+        return select_distinct(rest...);
     }
 
     template<typename Type, typename = std::enable_if_t<std::is_class<std::string>::value>>
-    void from(Type statement)
+    Query& from(Type statement)
     {
         fromClauses_.push_back(FromParser::parse(statement));
+        return *this;
     }
     template<typename Type, typename ... Types>
-    void from(Type statement, Types ... rest)
+    Query& from(Type statement, Types ... rest)
     {
         fromClauses_.push_back(FromParser::parse(statement));
-        from(rest...);
+        return from(rest...);
     }
 
     void left_join(From left_table,

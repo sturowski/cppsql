@@ -37,40 +37,18 @@
 
 using namespace cppsql;
 
-template<typename T, typename = std::enable_if_t<std::is_class<std::string>::value>>
-void adder(T v)
-{
-    std::cout << v << std::endl;
-}
-
-template<typename T, typename... Args>
-void adder(T first, Args... args)
-{
-    std::cout << first << std::endl;
-    adder(args...);
-}
 
 
 int main(int argc, char* argv[])
 {
 
     Query statement;
-    statement.select_distinct("O.ORDER_ID AS ID", "O.USER_ID", "U.USER_ID");
-    statement.from("ORDER O", "USER U");
+    statement.select_distinct("O.ORDER_ID AS ID", "O.USER_ID", "U.USER_ID")
+            .from("ORDER O", "USER U");
 
     std::cout << statement.get_select_statement() << "\n";
 
 
-//    Query statement;
-//    statement.select("ORDER_ID", "O").select("USER_ID", "O")
-//            .from("ORDER", "O")
-//            .and_where("ORDER_ID", "12345", Comparison::EQUALS);
-//    std::cout << statement.get_select_statement() << std::endl;
-//
-//
-//
-//
-//
 //    //AND (DATE_LAST IS NULL OR DATE_LAST = 0 OR DATE_LAST >= 20161107)
 //    Where test("DATE_LAST", "20161107", Comparison::GREATER_EQUALS_THAN, Operator::OR);
 //    Where test1("DATE_LAST", "0", test, Comparison::EQUALS, Operator::OR);
