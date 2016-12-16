@@ -67,6 +67,10 @@ int main(int argc, char* argv[])
     insert.insert_into("ORDER").columns("ORDER_ID", "ORDER_NAME");
     std::cout << insert.statement(para) << "\n";
 
+    Query insert2;
+    insert2.insert_into("ORDER");
+    std::cout << insert2.statement(para) << "\n";
+
 
 //    //AND (DATE_LAST IS NULL OR DATE_LAST = 0 OR DATE_LAST >= 20161107)
 //    Where test("DATE_LAST", "20161107", Comparison::GREATER_EQUALS_THAN, Operator::OR);

@@ -35,7 +35,8 @@
 #include "Query.h"
 
 cppsql::Query::Query()
-        :distinct_(false)
+        :distinct_(false),
+         type_(TYPE::NO)
 {
 
 }
@@ -46,7 +47,7 @@ cppsql::Query::Query(const Query& builder)
         selects_(builder.selects_),
         fromClauses_(builder.fromClauses_),
         whereClauses_(builder.whereClauses_),
-        type_(TYPE::NO)
+        type_(builder.type_)
 {
 
 }
@@ -107,7 +108,7 @@ const std::string cppsql::Query::create_select_statement(cppsql::Params& params)
         statement += " ";
         statement += this->create_where_string();
     }
-
+    statement += ";";
     if (!params.is_empty()) {
         this->replace_params(statement, params);
     }
@@ -344,6 +345,15 @@ const std::string cppsql::Query::create_insert_statement(cppsql::Params& params)
         statement += create_column_string();
         statement += ") ";
     }
+    statement += "VALUES";
+    statement += " (";
+
+    for (int i = 0; i<params.size(); i++) {
+        if (i>0)
+            statement += ", ";
+        statement += "'"+params[i]+"'";
+    }
+    statement += ");";
 
     return statement;
 }
