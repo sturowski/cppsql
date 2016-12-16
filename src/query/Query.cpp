@@ -35,7 +35,8 @@
 #include "Query.h"
 
 cppsql::Query::Query()
-        :distinct_(false)
+        :distinct_(false),
+         type_(TYPE::NO)
 {
 
 }
@@ -46,7 +47,7 @@ cppsql::Query::Query(const Query& builder)
         selects_(builder.selects_),
         fromClauses_(builder.fromClauses_),
         whereClauses_(builder.whereClauses_),
-        type_(TYPE::NO)
+        type_(builder.type_)
 {
 
 }
@@ -88,6 +89,8 @@ const std::string cppsql::Query::statement(Params params) const throw()
 {
     if (this->type_==TYPE::SELECT)
         return create_select_statement(params);
+    if (this->type_==TYPE::INSERT)
+        return create_insert_statement(params);
     return "";
 }
 const std::string cppsql::Query::create_select_statement(cppsql::Params& params) const
@@ -105,7 +108,7 @@ const std::string cppsql::Query::create_select_statement(cppsql::Params& params)
         statement += " ";
         statement += this->create_where_string();
     }
-
+    statement += ";";
     if (!params.is_empty()) {
         this->replace_params(statement, params);
     }
@@ -205,16 +208,6 @@ const bool cppsql::Query::has_joins() const
 const bool cppsql::Query::has_where_clauses() const
 {
     return !this->whereClauses_.empty();;
-}
-
-const bool cppsql::Query::has_order_by_conditions() const
-{
-    return false;
-}
-const bool cppsql::Query::set_distinct(const bool distinct)
-{
-    this->distinct_ = distinct;
-    return this->distinct_;
 }
 
 const std::string cppsql::Query::to_string() const
@@ -329,6 +322,62 @@ void cppsql::Query::set_type(cppsql::Query::TYPE type)
 {
     if (this->type_==TYPE::NO)
         this->type_ = type;
+}
+cppsql::Query& cppsql::Query::insert_into(const std::string table)
+{
+    table_ = table;
+    set_type(TYPE::INSERT);
+    return *this;
+}
+const std::string cppsql::Query::create_insert_statement(cppsql::Params& params) const
+{
+    if (!this->has_table())
+        throw cppsql::ErrorNames[cppsql::QUERY_CONTAINS_NO_TABLE];
+    if (params.is_empty())
+        throw cppsql::ErrorNames[cppsql::QUERY_CONTAINS_NO_VALUES];
+
+    std::string statement;
+    statement += "INSERT INTO ";
+    statement += this->table_;
+    statement += " ";
+    if (this->has_columns()) {
+        statement += "(";
+        statement += create_column_string();
+        statement += ") ";
+    }
+    statement += "VALUES";
+    statement += " (";
+
+    for (int i = 0; i<params.size(); i++) {
+        if (i>0)
+            statement += ", ";
+        statement += "'"+params[i]+"'";
+    }
+    statement += ");";
+
+    return statement;
+}
+const std::string cppsql::Query::create_column_string() const
+{
+    std::string statement;
+    bool first = true; // we need to know if we have the first item, to set the ',' correct
+
+    for (const auto& column : this->columns_) {
+        if (!first)
+            statement += ", ";
+        else
+            first = false;
+        statement += column;
+    }
+    return statement;
+}
+const bool cppsql::Query::has_table() const
+{
+    return !this->table_.empty();
+}
+const bool cppsql::Query::has_columns() const
+{
+    return this->columns_.size();
 }
 
 

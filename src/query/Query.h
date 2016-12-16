@@ -97,15 +97,22 @@ public:
         return from(rest...);
     }
 
-    void left_join(From left_table,
-            From right_table,
-            const Comparison comparison);
-    void right_join(From left_table,
-            From right_table,
-            const Comparison comparison);
-    void inner_join(From left_table,
-            From right_table,
-            const Comparison comparison);
+    template<typename Type, typename = std::enable_if_t<std::is_class<std::string>::value>>
+    Query& columns(Type statement)
+    {
+        columns_.push_back(statement);
+        return *this;
+    }
+    template<typename Type, typename ... Types>
+    Query& columns(Type statement, Types ... rest)
+    {
+        columns_.push_back(statement);
+        return columns(rest...);
+    }
+
+    void left_join(From left_table, From right_table, const Comparison comparison);
+    void right_join(From left_table, From right_table, const Comparison comparison);
+    void inner_join(From left_table, From right_table, const Comparison comparison);
 
     Query& where(Where where);
     Query& and_where(std::string left_val, Comparison comparison, std::string right_val);
@@ -121,6 +128,9 @@ public:
     Query& or_where(std::string left_val, Comparison comparison, Query& right_val, Where& extension);
     Query& or_where(Query& left_val, Comparison comparison, std::string right_val, Where& extension);
 
+    Query& insert_into(const std::string table);
+
+
     const std::string statement(Params params = Params()) const throw();
 
     virtual const bool empty() const override;
@@ -130,12 +140,13 @@ public:
     const bool has_from_clauses() const;
     const bool has_joins() const;
     const bool has_where_clauses() const;
-    const bool has_order_by_conditions() const;
-
+    const bool has_table() const;
+    const bool has_columns() const;
 private:
     enum class TYPE {
         NO,
-        SELECT
+        SELECT,
+        INSERT
     };
 
     bool distinct_;
@@ -143,15 +154,18 @@ private:
     std::vector<From> fromClauses_;
     std::vector<Join> joins_;
     std::vector<Where> whereClauses_;
+    std::string table_;
+    std::vector<std::string> columns_;
     TYPE type_;
     void set_type(TYPE type);
 
     const std::string create_select_statement(Params& params) const;
+    const std::string create_insert_statement(Params& params) const;
     const void replace_params(std::string& statement, Params& params) const throw();
     const std::string create_select_string() const;
     const std::string create_from_string() const;
     const std::string create_where_string() const;
-    const bool set_distinct(const bool distinct);
+    const std::string create_column_string() const;
 };
 
 }
