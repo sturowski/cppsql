@@ -13,37 +13,56 @@ include_directories(src/table)
 include_directories(src/tools)
 include_directories(src/parser)
 
-set(SOURCE_FILES
+set(HEADER_FILES
         src/query/Query.h
-        src/query/Query.cpp
         src/query/Select.h
-        src/query/Select.cpp
         src/defines/Errors.h
         src/query/From.h
-        src/query/From.cpp
-        src/query/Join.cpp
         src/query/Join.h
         src/defines/Defines.h
-        src/defines/Defines.cpp
-        src/query/Where.cpp
         src/query/Where.h
         src/tools/ResourceManager.h
         src/connection/MysqlConnection.h
-        src/connection/MysqlConnection.cpp
-        src/connection/Connection.cpp
         src/connection/Connection.h
         src/table/Row.h
         src/table/Table.h
-        src/table/Row.cpp
-        src/table/Table.cpp
         src/query/Object.h
-        src/query/Value.cpp
         src/query/Value.h
-        src/parser/SelectParser.cpp
         src/parser/SelectParser.h
         src/parser/ParseHelper.h
-        src/parser/FromParser.cpp
-        src/parser/FromParser.h src/query/Params.cpp src/query/Params.h)
+        src/parser/FromParser.h
+        src/query/Params.h
+)
 
-add_executable(cppsql main.cpp ${SOURCE_FILES})
-target_link_libraries(cppsql mysqlclient)
+set(SOURCE_FILES
+        src/query/Query.cpp
+        src/query/Select.cpp
+        src/query/From.cpp
+        src/query/Join.cpp
+        src/defines/Defines.cpp
+        src/query/Where.cpp
+        src/connection/MysqlConnection.cpp
+        src/connection/Connection.cpp
+        src/table/Row.cpp
+        src/table/Table.cpp
+        src/query/Value.cpp
+        src/parser/SelectParser.cpp
+        src/parser/FromParser.cpp
+        src/query/Params.cpp
+)
+
+add_executable(cppsql_test main.cpp ${SOURCE_FILES})
+target_link_libraries(cppsql_test mysqlclient)
+
+add_library(cppsql ${SOURCE_FILES})
+TARGET_LINK_LIBRARIES(cppsql mysqlclient)
+
+# Copy all Headers in one folder
+FOREACH(FILE ${HEADER_FILES})
+get_filename_component(barename ${FILE} NAME)
+add_custom_command(
+        TARGET cppsql POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_SOURCE_DIR}/${FILE}
+        ${CMAKE_CURRENT_BINARY_DIR}/include/${barename})
+ENDFOREACH()
