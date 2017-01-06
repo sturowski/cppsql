@@ -129,6 +129,7 @@ public:
     Query& or_where(Query& left_val, Comparison comparison, std::string right_val, Where& extension);
 
     Query& insert_into(const std::string table);
+    Query& delete_from(const std::string table);
 
 
     const std::string statement(Params params = Params()) const throw();
@@ -146,7 +147,8 @@ private:
     enum class TYPE {
         NO,
         SELECT,
-        INSERT
+        INSERT,
+        DELETE
     };
 
     bool distinct_;
@@ -161,6 +163,7 @@ private:
 
     const std::string create_select_statement(Params& params) const;
     const std::string create_insert_statement(Params& params) const;
+    const std::string create_delete_statement(Params& params) const;
     const void replace_params(std::string& statement, Params& params) const throw();
     const std::string create_select_string() const;
     const std::string create_from_string() const;

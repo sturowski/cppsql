@@ -91,6 +91,8 @@ const std::string cppsql::Query::statement(Params params) const throw()
         return create_select_statement(params);
     if (this->type_==TYPE::INSERT)
         return create_insert_statement(params);
+    if (this->type_==TYPE::DELETE)
+        return create_delete_statement(params);
     return "";
 }
 const std::string cppsql::Query::create_select_statement(cppsql::Params& params) const
@@ -378,6 +380,33 @@ const bool cppsql::Query::has_table() const
 const bool cppsql::Query::has_columns() const
 {
     return this->columns_.size();
+}
+
+cppsql::Query &cppsql::Query::delete_from(const std::string table) {
+    table_ = table;
+    set_type(TYPE::DELETE);
+    return *this;
+}
+
+const std::string cppsql::Query::create_delete_statement(cppsql::Params &params) const {
+    if (!this->has_table())
+        throw cppsql::ErrorNames[cppsql::QUERY_CONTAINS_NO_TABLE];
+
+    std::string statement;
+    statement += "DELETE FROM ";
+    statement += this->table_;
+
+    if (this->has_where_clauses()) {
+        statement += " ";
+        statement += this->create_where_string();
+    }
+
+    statement += ";";
+    if (!params.is_empty()) {
+        this->replace_params(statement, params);
+    }
+
+    return statement;
 }
 
 
