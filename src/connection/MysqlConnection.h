@@ -42,15 +42,15 @@ namespace cppsql {
 
 class MySqlConnection : public Connection {
 public:
-    MySqlConnection() throw();
+    MySqlConnection() throw(cppsql::SqlException);
     virtual ~MySqlConnection();
     virtual void connect(const std::string host, const std::string user, const std::string password,
-            const std::string database, const int port) throw() override;
+            const std::string database, const int port) throw(cppsql::SqlException) override;
     virtual void close() override;
-    virtual Table query(const std::string query) throw() override;
-    virtual void start_transaction() throw() override;
-    virtual void commit() throw() override;
-    virtual void rollback() throw() override;
+    virtual Table query(const std::string query) throw(cppsql::SqlException) override;
+    virtual void start_transaction() throw(cppsql::SqlException) override;
+    virtual void commit() throw(cppsql::SqlException) override;
+    virtual void rollback() throw(cppsql::SqlException) override;
 protected:
     MYSQL* con_;
 

@@ -34,24 +34,25 @@
 #include <string>
 #include "Row.h"
 #include <vector>
+#include <Errors.h>
 #include "Table.h"
 
 namespace cppsql {
 
 class Connection {
 public:
-    Connection() throw() { };
+    Connection() throw(cppsql::SqlException) { };
     virtual ~Connection() { };
 
     virtual void connect(const std::string host, const std::string user, const std::string password,
             const std::string database,
-            const int port) throw();
+            const int port) throw(cppsql::SqlException);
 
     virtual void close()=0;
-    virtual Table query(const std::string query) throw() =0;
-    virtual void start_transaction() throw() =0;
-    virtual void commit() throw() =0;
-    virtual void rollback() throw() =0;
+    virtual Table query(const std::string query) throw(cppsql::SqlException) =0;
+    virtual void start_transaction() throw(cppsql::SqlException) =0;
+    virtual void commit() throw(cppsql::SqlException) =0;
+    virtual void rollback() throw(cppsql::SqlException) =0;
 
 protected:
     std::string host_;

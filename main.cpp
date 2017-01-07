@@ -34,6 +34,8 @@
 #include <memory>
 #include <Defines.h>
 #include <Where.h>
+#include <MysqlConnection.h>
+#include <Errors.h>
 
 using namespace cppsql;
 
@@ -41,35 +43,91 @@ using namespace cppsql;
 
 int main(int argc, char* argv[])
 {
+    MySqlConnection connection;
+    connection.connect("127.0.0.1", "root", "root", "CLUBNET", 3306);
+    Params params;
+    params.clear();
+    params.add_param("10002");
+    params.add_param("test@test.de");
 
-    Query statement;
-    statement.select_distinct("O.ORDER_ID AS ID", "O.USER_ID", "U.USER_ID")
-            .from("ORDER O", "USER U")
-            .and_where("O.ORDER_ID", EQUALS, "?")
-            .and_where("O.BANK_ID", EQUALS, "?");
-    Where where1("TYPE", Comparison::EQUALS, "?", Operator::OR);
-    Where where2("DATE_BEGIN", Comparison::IS_NOT_NULL, "", where1, Operator::AND);
-    statement.and_where("DATE_END", Comparison::IS_NULL, "", where2);
+    cppsql::Query statement;
+    statement.delete_from("TOKEN")
+            .and_where("MSG_TYPE", cppsql::EQUALS, "?")
+            .and_where("MAIL_ADDRESS", cppsql::EQUALS, "?");
 
-    Params para;
-    para.add_param("12345678");
-    para.add_param("25400011");
-    para.add_param("NO_END");
-    std::cout << statement.statement(para) << "\n";
+    std::cout << statement.statement(params) << "\n";
+    //connection.query(statement.statement(params));
 
-    para.clear();
-    para.add_param("45678903");
-    para.add_param("25400011");
-    para.add_param("NO_END");
-    std::cout << statement.statement(para) << "\n";
+    params.clear();
+    params.add_param("123");
+    params.add_param("20160107");
+    params.add_param("10002");
+    params.add_param("test@test.de");
+    params.add_param("");
+    cppsql::Query statement2;
+    statement2.insert_into("TOKEN").columns("TOKEN", "CREATE_DATE", "MSG_TYPE", "MAIL_ADDRESS", "DATA");
 
-    Query insert;
-    insert.insert_into("ORDER").columns("ORDER_ID", "ORDER_NAME");
-    std::cout << insert.statement(para) << "\n";
+    try {
+        std::cout << statement2.statement(params) << "\n";
+        connection.query(statement2.statement(params));
+    }
+    catch (const std::exception &e) {
+        std::cout << e.what() << std::endl;
+    }
 
-    Query insert2;
-    insert2.insert_into("ORDER");
-    std::cout << insert2.statement(para) << "\n";
+//    Query statement;
+//    statement.select("U.USER_ID", "U.SALT", "U.PASSWORD", "U.AVAILABLE_LOGINS")
+//            .from("USER U", "PERSON P")
+//            .and_where("U.PERSON_ID", EQUALS, "P.PERSON_ID")
+//            .and_where("P.EMAIL", EQUALS, "?");
+//    Params params;
+//    params.add_param("test@test.de");
+//
+//    MySqlConnection connection;
+//    connection.connect("127.0.0.1", "root", "root", "CLUBNET", 3306);
+//
+//    Table table = connection.query(statement.statement(params));
+//
+//    for(auto row : table.rows()) {
+//        std::cout << row.to_string() << "\n";
+//    }
+
+
+
+//    SELECT U.USER_ID, U.SALT, U.PASSWORD, U.AVAILABLE_LOGINS
+//    FROM USER U, PERSON P
+//    WHERE U.PERSON_ID = P.PERSON_ID
+//    AND P.EMAIL = 'test@test.de';
+
+
+//    Query statement;
+//    statement.select_distinct("O.ORDER_ID AS ID", "O.USER_ID", "U.USER_ID")
+//            .from("ORDER O", "USER U")
+//            .and_where("O.ORDER_ID", EQUALS, "?")
+//            .and_where("O.BANK_ID", EQUALS, "?");
+//    Where where1("TYPE", Comparison::EQUALS, "?", Operator::OR);
+//    Where where2("DATE_BEGIN", Comparison::IS_NOT_NULL, "", where1, Operator::AND);
+//    statement.and_where("DATE_END", Comparison::IS_NULL, "", where2);
+//
+//    Params para;
+//    para.add_param("12345678");
+//    para.add_param("25400011");
+//    para.add_param("NO_END");
+//    std::cout << statement.statement(para) << "\n";
+//
+//    para.clear();
+//    para.add_param("45678903");
+//    para.add_param("25400011");
+//    para.add_param("NO_END");
+//    std::cout << statement.statement(para) << "\n";
+//
+//    Query insert;
+//    insert.insert_into("ORDER").columns("ORDER_ID", "ORDER_NAME");
+//    std::cout << insert.statement(para) << "\n";
+//
+//    Query insert2;
+//    insert2.insert_into("ORDER");
+//    std::cout << insert2.statement(para) << "\n";
 
 
 //    //AND (DATE_LAST IS NULL OR DATE_LAST = 0 OR DATE_LAST >= 20161107)

@@ -31,7 +31,7 @@
 
 #include "Connection.h"
 void cppsql::Connection::connect(const std::string host, const std::string user, const std::string password,
-        const std::string database, const int port) throw()
+        const std::string database, const int port) throw(cppsql::SqlException)
 {
     this->host_ = host;
     this->user_ = user;

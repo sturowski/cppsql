@@ -37,21 +37,22 @@
  * @throw SqlException SQL_INIT_FAILED
  * @return
  */
-cppsql::MySqlConnection::MySqlConnection() throw()
+cppsql::MySqlConnection::MySqlConnection() throw(cppsql::SqlException)
         :con_(nullptr)
 {
-    con_ = mysql_init(nullptr);
-    if (con_==nullptr) {
-        throw SqlException(Errors::SQL_INIT_FAILED);
-    }
+
 }
 cppsql::MySqlConnection::~MySqlConnection()
 {
     close();
 }
 void cppsql::MySqlConnection::connect(const std::string host, const std::string user, const std::string password,
-        const std::string database, const int port) throw()
+        const std::string database, const int port) throw(cppsql::SqlException)
 {
+    con_ = mysql_init(nullptr);
+    if (con_==nullptr) {
+        throw SqlException(Errors::SQL_INIT_FAILED);
+    }
     // Call the parent function
     Connection::connect(host, user, password, database, port);
     if (mysql_real_connect(con_, host_.c_str(), user_.c_str(), password_.c_str(),
@@ -67,7 +68,7 @@ void cppsql::MySqlConnection::close()
     if (con_!=nullptr)
         mysql_close(con_);
 }
-cppsql::Table cppsql::MySqlConnection::query(const std::string query) throw()
+cppsql::Table cppsql::MySqlConnection::query(const std::string query) throw(cppsql::SqlException)
 {
     if (query.empty())
         throw SqlException(Errors::SQL_EMPTY_QUERY);
@@ -76,7 +77,7 @@ cppsql::Table cppsql::MySqlConnection::query(const std::string query) throw()
         throw SqlException(Errors::SQL_QUERY_FAILED, mysql_error(con_));
     }
 
-    if (query.find("INSERT")!=std::string::npos)
+    if (query.find("INSERT")!=std::string::npos || query.find("DELETE")!=std::string::npos)
         return Table();
 
     MYSQL_RES* result = mysql_store_result(con_);
@@ -101,19 +102,19 @@ cppsql::Table cppsql::MySqlConnection::query(const std::string query) throw()
     mysql_free_result(result);
     return table;
 }
-void cppsql::MySqlConnection::start_transaction() throw()
+void cppsql::MySqlConnection::start_transaction() throw(cppsql::SqlException)
 {
     if (mysql_autocommit(con_, 0))
         throw SqlException(Errors::SQL_START_TRANSACTION_FAILED, mysql_error(con_));
 }
-void cppsql::MySqlConnection::commit() throw()
+void cppsql::MySqlConnection::commit() throw(cppsql::SqlException)
 {
     if (mysql_commit(con_))
         throw SqlException(Errors::SQL_COMMIT_TRANSACTION_FAILED, mysql_error(con_));
     if (mysql_autocommit(con_, 1))
         throw SqlException(Errors::SQL_COMMIT_TRANSACTION_FAILED, mysql_error(con_));
 }
-void cppsql::MySqlConnection::rollback() throw()
+void cppsql::MySqlConnection::rollback() throw(cppsql::SqlException)
 {
     if (mysql_rollback(con_))
         throw SqlException(Errors::SQL_ROLLBACK_TRANSACTION_FAILED, mysql_error(con_));
