@@ -74,7 +74,7 @@ cppsql::Table cppsql::MySqlConnection::query(const std::string query) throw(cpps
         throw SqlException(Errors::SQL_EMPTY_QUERY);
 
     if (mysql_query(con_, query.c_str())) {
-        throw SqlException(Errors::SQL_QUERY_FAILED, mysql_error(con_));
+        throw SqlException(Errors::SQL_QUERY_FAILED, mysql_error(con_), query);
     }
 
     if (query.find("INSERT")!=std::string::npos || query.find("DELETE")!=std::string::npos)
@@ -84,7 +84,7 @@ cppsql::Table cppsql::MySqlConnection::query(const std::string query) throw(cpps
 
     if (result==NULL) {
         mysql_free_result(result);
-        throw SqlException(Errors::SQL_QUERY_FAILED, mysql_error(con_));
+        throw SqlException(Errors::SQL_QUERY_FAILED, mysql_error(con_), query);
     }
 
     int num_fields = mysql_num_fields(result);

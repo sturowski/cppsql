@@ -76,26 +76,37 @@ enum Errors {
 
 class SqlException : public std::exception {
 public:
-    SqlException(Errors error, const std::string errorText = "")
+    SqlException(Errors error, const std::string error_text = "", const std::string statement = "")
             :error_(error),
-             errorText_(errorText)
+             error_text_(error_text),
+             statement_(statement)
     {
 
     }
     virtual const char* what() const throw()
     {
-        if (!errorText_.empty())
-            return errorText_.c_str();
+        if (!error_text_.empty())
+            return error_text_.c_str();
         return ErrorNames[error_];
     }
 
+    const std::string statement() const {
+        return statement_;
+    }
+
+    const std::string log_entry() const {
+        std::string log = "Message:"+ std::string(what());
+        log += " Statement:"+statement()+"";
+        return log;
+    };
     const int code() const
     {
         return error_;
     }
 private:
     Errors error_;
-    std::string errorText_;
+    std::string error_text_;
+    std::string statement_;
 };
 
 
