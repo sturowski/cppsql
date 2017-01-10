@@ -44,6 +44,7 @@
 #include "Where.h"
 #include "Object.h"
 #include "Params.h"
+#include "Set.h"
 
 namespace cppsql {
 class Where;
@@ -130,6 +131,9 @@ public:
 
     Query& insert_into(const std::string table);
     Query& delete_from(const std::string table);
+    Query& update(const std::string table);
+
+    Query& set(const std::string column, const std::string value);
 
 
     const std::string statement(Params params = Params()) const throw();
@@ -143,27 +147,33 @@ public:
     const bool has_where_clauses() const;
     const bool has_table() const;
     const bool has_columns() const;
+    const bool has_sets() const;
 private:
     enum class TYPE {
         NO,
         SELECT,
         INSERT,
-        DELETE
+        DELETE,
+        UPDATE
     };
 
+    TYPE type_;
     bool distinct_;
+
+    std::string table_;
     std::vector<Select> selects_;
     std::vector<From> fromClauses_;
     std::vector<Join> joins_;
     std::vector<Where> whereClauses_;
-    std::string table_;
     std::vector<std::string> columns_;
-    TYPE type_;
+    std::vector<Set> sets_;
+
     void set_type(TYPE type);
 
     const std::string create_select_statement(Params& params) const;
     const std::string create_insert_statement(Params& params) const;
     const std::string create_delete_statement(Params& params) const;
+    const std::string create_update_statement(Params& params) const;
     const void replace_params(std::string& statement, Params& params) const throw();
     const std::string create_select_string() const;
     const std::string create_from_string() const;

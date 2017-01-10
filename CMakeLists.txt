@@ -32,6 +32,7 @@ set(HEADER_FILES
         src/parser/ParseHelper.h
         src/parser/FromParser.h
         src/query/Params.h
+        src/query/Set.h
 )
 
 set(SOURCE_FILES
@@ -49,7 +50,7 @@ set(SOURCE_FILES
         src/parser/SelectParser.cpp
         src/parser/FromParser.cpp
         src/query/Params.cpp
-)
+        src/query/Set.cpp)
 
 add_executable(cppsql_test main.cpp ${SOURCE_FILES})
 target_link_libraries(cppsql_test mysqlclient)

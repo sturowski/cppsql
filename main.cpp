@@ -45,35 +45,24 @@ int main(int argc, char* argv[])
 {
     MySqlConnection connection;
     connection.connect("127.0.0.1", "root", "root", "CLUBNET", 3306);
+
+    Query query;
+    query.update("PERSON").set("FIRST_NAME","?").set("LAST_NAME","?").and_where("PERSON_ID",EQUALS,"?");
     Params params;
-    params.clear();
-    params.add_param("10002");
-    params.add_param("test@test.de");
-
-    cppsql::Query statement;
-    statement.delete_from("TOKEN")
-            .and_where("MSG_TYPE", cppsql::EQUALS, "?")
-            .and_where("MAIL_ADDRESS", cppsql::EQUALS, "?");
-
-    std::cout << statement.statement(params) << "\n";
-    //connection.query(statement.statement(params));
-
-    params.clear();
-    params.add_param("123");
-    params.add_param("20160107");
-    params.add_param("10002");
-    params.add_param("test@test.de");
-    params.add_param("");
-    cppsql::Query statement2;
-    statement2.insert_into("TOKEN").columns("TOKEN", "CREATE_DATE", "MSG_TYPE", "MAIL_ADDRESS", "DATA");
+    params.add_param("Sven");
+    params.add_param("Turowski");
+    params.add_param("1");
 
     try {
-        std::cout << statement2.statement(params) << "\n";
-        connection.query(statement2.statement(params));
+        connection.query(query.statement(params));
     }
-    catch (const std::exception &e) {
-        std::cout << e.what() << std::endl;
+    catch (const SqlException& e) {
+        std::cout << e.log_entry() << "\n";
     }
+
+
+
+
 
 //    Query statement;
 //    statement.select("U.USER_ID", "U.SALT", "U.PASSWORD", "U.AVAILABLE_LOGINS")

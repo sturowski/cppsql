@@ -77,7 +77,9 @@ cppsql::Table cppsql::MySqlConnection::query(const std::string query) throw(cpps
         throw SqlException(Errors::SQL_QUERY_FAILED, mysql_error(con_), query);
     }
 
-    if (query.find("INSERT")!=std::string::npos || query.find("DELETE")!=std::string::npos)
+    if (query.find("INSERT")!=std::string::npos
+        || query.find("DELETE")!=std::string::npos
+        || query.find("UPDATE")!=std::string::npos)
         return Table();
 
     MYSQL_RES* result = mysql_store_result(con_);
