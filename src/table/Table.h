@@ -36,14 +36,18 @@
 namespace cppsql {
 class Table {
 public:
+    Table();
+    Table(unsigned long affected_rows);
     Row& operator[](std::size_t idx);
     const Row& operator[](std::size_t idx) const;
     void add_row(Row row);
     unsigned long size();
     const std::vector<Row>& rows();
+    const unsigned long get_affected_rows() const;
 
 private:
     std::vector<Row> rows_;
+    unsigned long affected_rows_;
 };
 
 }

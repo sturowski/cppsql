@@ -80,7 +80,7 @@ cppsql::Table cppsql::MySqlConnection::query(const std::string query) throw(cpps
     if (query.find("INSERT")!=std::string::npos
         || query.find("DELETE")!=std::string::npos
         || query.find("UPDATE")!=std::string::npos)
-        return Table();
+        return Table(mysql_affected_rows(con_));
 
     MYSQL_RES* result = mysql_store_result(con_);
 
@@ -97,7 +97,12 @@ cppsql::Table cppsql::MySqlConnection::query(const std::string query) throw(cpps
     while ((my_row = mysql_fetch_row(result))) {
         Row row;
         for (int i = 0; i<num_fields; i++) {
-            row.add_column(my_row[i]);
+            char* value = my_row[i];
+            if(value == nullptr) {
+                row.add_column("");
+                continue;
+            }
+            row.add_column(value);
         }
         table.add_row(row);
     }

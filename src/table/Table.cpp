@@ -41,6 +41,7 @@ const cppsql::Row& cppsql::Table::operator[](std::size_t idx) const
 void cppsql::Table::add_row(cppsql::Row row)
 {
     rows_.push_back(row);
+    affected_rows_++;
 }
 unsigned long cppsql::Table::size()
 {
@@ -49,4 +50,16 @@ unsigned long cppsql::Table::size()
 const std::vector<cppsql::Row>& cppsql::Table::rows()
 {
     return rows_;
+}
+
+cppsql::Table::Table() : affected_rows_(0){
+
+}
+
+cppsql::Table::Table(unsigned long affected_rows) : affected_rows_(affected_rows){
+
+}
+
+const unsigned long cppsql::Table::get_affected_rows() const {
+    return affected_rows_;
 }
